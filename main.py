@@ -1,16 +1,31 @@
 from textwrap import fill
 import tkinter as tk
 
+from tkinter import ALL, EventType
+
+def do_zoom(event):
+    x = canvas.canvasx(event.x)
+    y = canvas.canvasy(event.y)
+    factor = 1.001 ** event.delta
+    canvas.scale(ALL, x, y, factor, factor)
+    canvas.configure(scrollregion=canvas.bbox("all"))
+
+
 def update_l1(event):
     l1.config(text=f'W:{parent.winfo_width()} H:{parent.winfo_height()}')
 
 parent = tk.Tk()
-parent.geometry("500x500")
 parent.bind('<Configure>', update_l1)
+parent.geometry("500x500")
 
 canvas_x = 1
 canvas_y = 1
+
 canvas = tk.Canvas(parent, width=300, height=300, bg='white')
+canvas.bind("<MouseWheel>", do_zoom)
+canvas.bind('<ButtonPress-1>', lambda event: canvas.scan_mark(event.x, event.y))
+canvas.bind("<B1-Motion>", lambda event: canvas.scan_dragto(event.x, event.y, gain=1))
+
 canvas.create_oval(10, 10, 20, 20, fill="red")
 canvas.create_oval(400, 400, 420, 420, fill="blue")
 canvas.create_rectangle(600, 10, 640, 50)
@@ -31,8 +46,8 @@ l1.grid(row=0, column=0, columnspan=2)
 l2 = tk.Label(parent, text='bbbb')
 l2.grid(row=1, column=0, rowspan=2)
 
-# while True:
-#     # update_l1()
-#     parent.update()
+while True:
+    parent.update_idletasks()
+    parent.update()
 
 parent.mainloop()
