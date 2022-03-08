@@ -1,14 +1,32 @@
 from textwrap import fill
 import tkinter as tk
+import tkinter
+from tkinter import messagebox
 
-from tkinter import ALL, EventType
+from mido import MidiFile
+import pygame
+
+from tkinter import *
+
+width = 300
+height = 300
 
 def do_zoom(event):
+    global width, height
+
     x = canvas.canvasx(event.x)
     y = canvas.canvasy(event.y)
-    factor = 1.001 ** event.delta
-    canvas.scale(ALL, x, y, factor, factor)
-    canvas.configure(scrollregion=canvas.bbox("all"))
+    factor = 1.0005 ** event.delta
+
+    if width * factor >= 299 and width * factor < 500:
+        canvas.scale(ALL, x, y, factor, factor)
+        canvas.configure(scrollregion=canvas.bbox("all"))
+
+        width = width * factor
+        height = height * factor
+        print(width, height)
+    else:
+        print('cant scale anymore')
 
 
 def update_l1(event):
@@ -21,7 +39,7 @@ parent.geometry("500x500")
 canvas_x = 1
 canvas_y = 1
 
-canvas = tk.Canvas(parent, width=300, height=300, bg='white')
+canvas = tk.Canvas(parent, width=width, height=height, bg='white')
 canvas.bind("<MouseWheel>", do_zoom)
 canvas.bind('<ButtonPress-1>', lambda event: canvas.scan_mark(event.x, event.y))
 canvas.bind("<B1-Motion>", lambda event: canvas.scan_dragto(event.x, event.y, gain=1))
@@ -46,8 +64,16 @@ l1.grid(row=0, column=0, columnspan=2)
 l2 = tk.Label(parent, text='bbbb')
 l2.grid(row=1, column=0, rowspan=2)
 
-while True:
-    parent.update_idletasks()
-    parent.update()
+def helloCallBack():
+    song = 'resources\VampireKillerCV1.mid'
+    pygame.mixer.init()
+    pygame.mixer.music.load(song)
+    pygame.mixer.music.play(loops=0)
+    pygame.mixer.stop()
 
-parent.mainloop()
+b = tk.Button(parent, text ="Hello", command = helloCallBack)
+b.grid(row=2, column=3)
+
+
+while True:
+    parent.update()
