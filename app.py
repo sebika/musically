@@ -1,19 +1,26 @@
 import tkinter as tk
 from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH
-from canvas import MusicallyCanvas
+from pianoRoll import PianoRoll, PianoNoteSidebar
 
 
 class App:
     def __init__(self):
         self.root = tk.Tk()
-        self.canvas = MusicallyCanvas(self.root)
+        self.canvas = PianoRoll(self.root)
+        self.sidebar = PianoNoteSidebar(self.root)
 
-        l1 = tk.Label(self.root, text='aaaaaaaaaaaaaaaaaaaa')
+        self.canvas.configure_scrollbars(self.root, self.sidebar)
+
+        l1 = tk.Label(self.root, text='(0, 1)')
         l1.grid(row=0, column=1, columnspan=3)
 
         self.root.update()
-        l2 = tk.Label(self.root, text='aaaaaaaaaaaaaaaaaaaa')
+        l2 = tk.Label(self.root, text='(1, 0)')
         l2.grid(row=1, column=0, rowspan=2)
+
+        self.root.update()
+        l2 = tk.Label(self.root, text='(0, 0)')
+        l2.grid(row=0, column=0)
 
         self.init_window()
         self.init_menu()
@@ -29,6 +36,7 @@ class App:
         self.root.geometry(
             f'{ROOT_INITIAL_WIDTH}x{ROOT_INITIAL_HEIGHT}+{pixelsRight}+{pixelsDown}'
         )
+        self.root.deiconify()
         self.root.iconphoto(True, tk.PhotoImage(file='resources/logo.png'))
         self.root.title('Musically')
 
@@ -51,8 +59,8 @@ class App:
 
     def updateSize(self, event):
         self.canvas.updateSize(event, self.root)
+        self.sidebar.updateSize(event, self.root)
 
 
     def run(self):
-        while True:
-            self.root.update()
+        self.root.mainloop()
