@@ -1,3 +1,4 @@
+from textwrap import fill
 import tkinter as tk
 from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH
 from pianoRoll import PianoRoll, PianoNoteSidebar
@@ -11,21 +12,23 @@ class App:
 
         self.canvas.configure_scrollbars(self.root)
 
-        l1 = tk.Label(self.root, text='(0, 1)')
-        l1.grid(row=0, column=1, columnspan=3)
+        self.root.update()
+        l1 = tk.Label(self.root, text='(0, 0)')
+        l1.grid(row=0, column=0)
 
         self.root.update()
-        l2 = tk.Label(self.root, text='(1, 0)')
-        l2.grid(row=1, column=0, rowspan=2)
+        l2 = tk.Frame(self.root, background='lightgray', width=ROOT_INITIAL_WIDTH*0.86, height=100)
+        l2.grid(row=0, column=1, columnspan=3, sticky='w')
 
         self.root.update()
-        l2 = tk.Label(self.root, text='(0, 0)')
-        l2.grid(row=0, column=0)
+        l3 = tk.Frame(self.root, background='lightgray', width=100, height=ROOT_INITIAL_HEIGHT* 0.75)
+        l3.grid(row=1, column=0, rowspan=2, stick='S')
 
         self.init_window()
         self.init_menu()
 
         self.root.bind('<Configure>', self.updateSize)
+        self.root.configure(bg='white')
 
 
     def init_window(self):

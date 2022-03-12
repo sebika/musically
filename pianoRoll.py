@@ -9,7 +9,9 @@ from constants import (
     NOTE_THICKNESS,
     SIDEBAR_PIANO_HEIGHT_PERCENT,
     SIDEBAR_PIANO_WIDTH_PERCENT,
-    COLOR_PALETTE
+    COLOR_PALETTE,
+    MIN_ZOOM,
+    MAX_ZOOM
 )
 from random import randint, choice
 from note import SidebarNote
@@ -23,6 +25,7 @@ class PianoRoll(Canvas):
         self.height = PIANO_ROLL_HEIGHT_PERCENT / 100 * parent.winfo_height()
         self.gridX = CANVAS_GRID_X
         self.gridY = CANVAS_GRID_Y
+        self.zoomLevel = 1
 
         super(PianoRoll, self).__init__(
             parent,
@@ -76,11 +79,14 @@ class PianoRoll(Canvas):
         y = self.canvasy(event.y)
         factor = 1.001 ** event.delta
 
-        self.scale('all', x, y, factor, 1)
+        print(self.zoomLevel)
+        if self.zoomLevel * factor > MIN_ZOOM and self.zoomLevel * factor < MAX_ZOOM:
+            self.zoomLevel *= factor
+            self.scale('all', x, y, factor, 1)
 
-        x1, y1, x2, _ = self.bbox('all')
-        _, _, _, y2 = self.sidebar.bbox('all')
-        self.configure(scrollregion=[x1, y1, x2, y2])
+            x1, y1, x2, _ = self.bbox('all')
+            _, _, _, y2 = self.sidebar.bbox('all')
+            self.configure(scrollregion=[x1, y1, x2, y2])
 
     def _on_mousewheel(self, event):
         self.yview_scroll(int(-1*(event.delta/120)), 'units')
