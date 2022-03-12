@@ -6,10 +6,10 @@ from pianoRoll import PianoRoll, PianoNoteSidebar
 class App:
     def __init__(self):
         self.root = tk.Tk()
-        self.canvas = PianoRoll(self.root)
         self.sidebar = PianoNoteSidebar(self.root)
+        self.canvas = PianoRoll(self.root, self.sidebar)
 
-        self.canvas.configure_scrollbars(self.root, self.sidebar)
+        self.canvas.configure_scrollbars(self.root)
 
         l1 = tk.Label(self.root, text='(0, 1)')
         l1.grid(row=0, column=1, columnspan=3)
