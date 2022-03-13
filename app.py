@@ -1,7 +1,9 @@
-from textwrap import fill
+from collections import OrderedDict
 import tkinter as tk
 from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH
-from pianoRoll import PianoRoll, PianoNoteSidebar
+from pianoRoll import PianoRoll
+from sidebar import PianoNoteSidebar
+from mido import MidiFile, Message
 
 
 class App:
@@ -65,5 +67,42 @@ class App:
         self.sidebar.updateSize(event, self.root)
 
 
+    def import_song(self, songname):
+        tracks = OrderedDict()
+        mid = MidiFile(songname)
+        for track in mid.tracks:
+            tracks[track.name] = []
+
+            # Each note, for example C4 should have (start, end) pair
+            current_track_dict = {}
+            ticks = 0
+
+            for msg in track:
+                if isinstance(msg, Message) and (msg.type == 'note_on' or msg.type == 'note_off'):
+                    pitch = self.sidebar.notes[msg.note].pitch
+                    ticks += msg.time
+
+                    # This is the start of a note
+                    if msg.type == 'note_on' and msg.velocity != 0:
+                        if pitch in current_track_dict:
+                            print("Error: note {pitch} starts playing again before it ended")
+                        current_track_dict[pitch] = [ticks, -1]
+
+                    # This is the and of a note
+                    elif (msg.type == 'note_on' and msg.velocity == 0) or msg.type == 'note_off':
+                        if pitch not in current_track_dict:
+                            print("Error: note {pitch} ended before it started")
+                        current_track_dict[pitch][1] = ticks
+                        tracks[track.name].append([pitch, current_track_dict[pitch]])
+
+                        current_track_dict.pop(pitch, 'None')
+
+            # Remove empty tracks
+            if len(tracks[track.name]) == 0:
+                tracks.pop(track.name)
+
+        print(tracks)
+
     def run(self):
+        self.import_song('resources\song.mid')
         self.root.mainloop()
