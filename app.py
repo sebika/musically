@@ -79,6 +79,11 @@ class App:
             filetypes=(("midi", "*.mid"),("all files", "*.*"))
         )
         self.tracks = self.import_song(self.root.filename)
+
+        # Create a new canvas
+        self.canvas.grid_remove()
+        self.canvas = PianoRoll(self.root, self.sidebar)
+
         self.canvas.delete('all')
         self.canvas.draw(self.tracks)
         self.canvas.configure_scrollbars(self.root)

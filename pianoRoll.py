@@ -22,6 +22,8 @@ class PianoRoll(Canvas):
         self.gridX = CANVAS_GRID_X
         self.gridY = CANVAS_GRID_Y
         self.zoomLevel = 1
+        self.last_x = 0
+        self.last_y = 0
 
         super(PianoRoll, self).__init__(
             parent,
@@ -59,6 +61,7 @@ class PianoRoll(Canvas):
                         fill=COLOR_PALETTE['naples_yellow'],
                         tags='note'
                     )
+        self.create_rectangle(0, 0, 5, self.get_note_height(0), fill='red')
 
 
     def configure_scrollbars(self, parent):
@@ -119,6 +122,9 @@ class PianoRoll(Canvas):
         x = self.canvasx(event.x)
         y = self.canvasy(event.y)
         factor = 1.001 ** event.delta
+
+        self.last_x = x
+        self.last_y = y
 
         can_zoom = True
         if self.scroll_x.get() == (0.0, 1.0) and factor < 1:
