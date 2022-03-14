@@ -65,8 +65,14 @@ class PianoRoll(Canvas):
         self.bind('<Control-MouseWheel>', self._do_zoom)
         self.bind("<MouseWheel>", self._on_mousewheel)
 
-        # self.bind('<ButtonPress-1>', lambda event: self.scan_mark(event.x, event.y))
-        # self.bind('<B1-Motion>', lambda event: self.scan_dragto(event.x, event.y, gain=1))
+        # self.bind('<ButtonPress-1>', lambda event: (
+        #     self.scan_mark(event.x, event.y),
+        #     self.sidebar.scan_mark(event.x, event.y),
+        # ))
+        # self.bind('<B1-Motion>', lambda event: (
+        #     self.scan_dragto(event.x, event.y, gain=1),
+        #     self.sidebar.scan_dragto(event.x, event.y, gain=1),
+        # ))
 
         self.scroll_x = tk.Scrollbar(parent, orient='horizontal', command=self.xview)
         self.scroll_x.grid(row=self.gridX-1, column=self.gridY, sticky='ew', columnspan=2)
@@ -104,22 +110,29 @@ class PianoRoll(Canvas):
     def numeric_to_string_note(self, note):
         return self.sidebar.notes[note].pitch
 
+
     def string_to_numeric_note(self, note):
         return self.sidebar.note_to_int[note]
 
 
-    def _do_zoom(self, event,):
+    def _do_zoom(self, event):
         x = self.canvasx(event.x)
         y = self.canvasy(event.y)
         factor = 1.001 ** event.delta
 
-        if self.zoomLevel * factor > MIN_ZOOM and self.zoomLevel * factor < MAX_ZOOM:
+        can_zoom = True
+        if self.scroll_x.get() == (0.0, 1.0) and factor < 1:
+            can_zoom = False
+        if self.zoomLevel * factor < MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
+            can_zoom = False
+
+        if can_zoom:
             self.zoomLevel *= factor
             self.scale('all', x, y, factor, 1)
 
             x1, y1, x2, _ = self.bbox('all')
             _, _, _, y2 = self.sidebar.bbox('all')
-            self.configure(scrollregion=[x1, y1, x2, y2])
+            self.configure(scrollregion=[x1, 0, x2, y2])
 
 
     def _on_mousewheel(self, event):

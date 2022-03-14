@@ -81,6 +81,7 @@ class App:
         self.tracks = self.import_song(self.root.filename)
         self.canvas.delete('all')
         self.canvas.draw(self.tracks)
+        self.canvas.configure_scrollbars(self.root)
 
 
     def import_song(self, songname):
