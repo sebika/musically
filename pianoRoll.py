@@ -27,7 +27,7 @@ class PianoRoll(Canvas):
             parent,
             width=self.width,
             height=self.height,
-            bg=COLOR_PALETTE['mint_cream'],
+            bg='#34444e',
             highlightthickness=0
         )
 
@@ -35,10 +35,30 @@ class PianoRoll(Canvas):
         self.grid(row=self.gridX, column=self.gridY)
 
 
-    def draw(self):
-        for i in range(20):
-            y = randint(0, 10)*100
-            self.create_rectangle(100*i, y, 100+100*i, y + NOTE_THICKNESS, fill=choice(['red', 'blue', 'pink', 'orange', 'yellow']), tags='note')
+    def draw(self, tracks=None):
+        if tracks == None:
+            default_notes = ['C10', 'C#10', 'D10', 'D#10', 'E10', 'F10', 'F#10', 'G10', 'G#10', 'A10', 'A#10', 'B10']
+            for i, note in enumerate(default_notes):
+                note_y = self.get_note_height(self.string_to_numeric_note(note))
+                self.create_rectangle(
+                    100*i, note_y,
+                    100+100*i, note_y + NOTE_THICKNESS,
+                    fill=COLOR_PALETTE['naples_yellow'],
+                    tags='note'
+                )
+        else:
+            for track_name, notes in tracks.items():
+                for note in notes:
+                    note_y = self.get_note_height(note[0])
+                    note_start = note[1]
+                    note_end = note[2]
+
+                    self.create_rectangle(
+                        note_start, note_y,
+                        note_end, note_y + NOTE_THICKNESS,
+                        fill=COLOR_PALETTE['naples_yellow'],
+                        tags='note'
+                    )
 
 
     def configure_scrollbars(self, parent):
@@ -70,6 +90,24 @@ class PianoRoll(Canvas):
 
         self.config(width=self.width, height=self.height)
 
+
+    def get_note_height(self, note):
+        height = self.sidebar.notes[note].y
+        pitch = self.numeric_to_string_note(note)
+
+        if pitch[0] in list('CDFGA') and pitch[1] != '#':
+            height += NOTE_THICKNESS // 2
+
+        return height
+
+
+    def numeric_to_string_note(self, note):
+        return self.sidebar.notes[note].pitch
+
+    def string_to_numeric_note(self, note):
+        return self.sidebar.note_to_int[note]
+
+
     def _do_zoom(self, event,):
         x = self.canvasx(event.x)
         y = self.canvasy(event.y)
@@ -82,6 +120,7 @@ class PianoRoll(Canvas):
             x1, y1, x2, _ = self.bbox('all')
             _, _, _, y2 = self.sidebar.bbox('all')
             self.configure(scrollregion=[x1, y1, x2, y2])
+
 
     def _on_mousewheel(self, event):
         self.yview_scroll(int(-1*(event.delta/120)), 'units')

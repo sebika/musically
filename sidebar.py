@@ -59,6 +59,10 @@ class PianoNoteSidebar(Canvas):
         # Here I want to keep the notes in this order: C0, C#0, D0, ..., A10, A#10
         self.notes.reverse()
 
+        self.note_to_int = {}
+        for i, note in enumerate(self.notes):
+            self.note_to_int[note.pitch] = i
+
 
     def updateSize(self, event, parent):
         parent.update()

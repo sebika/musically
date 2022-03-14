@@ -1,9 +1,14 @@
 from collections import OrderedDict
 import tkinter as tk
+
+from sympy import Order
 from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH
 from pianoRoll import PianoRoll
 from sidebar import PianoNoteSidebar
 from mido import MidiFile, Message
+from tkinter import filedialog
+
+from timeit import default_timer as timer
 
 
 class App:
@@ -50,13 +55,13 @@ class App:
         self.menu = tk.Menu(self.root)
 
         fileMenu = tk.Menu(self.menu, tearoff=0)
-        fileMenu.add_command(label='Open', command='')
-        fileMenu.add_command(label='Save', command='')
+        fileMenu.add_command(label='Open', command=self._open_file)
         fileMenu.add_separator()
         fileMenu.add_command(label='Exit', command=self.root.destroy)
         self.menu.add_cascade(label='File', menu=fileMenu)
 
-        self.menu.add_cascade(label='Preferences')
+        self.menu.add_cascade(label='Edit')
+        self.menu.add_cascade(label='View')
         self.menu.add_cascade(label='Help')
 
         self.root.config(menu=self.menu)
@@ -67,19 +72,30 @@ class App:
         self.sidebar.updateSize(event, self.root)
 
 
-    def import_song(self, songname):
-        tracks = OrderedDict()
-        mid = MidiFile(songname)
-        for track in mid.tracks:
-            tracks[track.name] = []
+    def _open_file(self):
+        self.root.filename = filedialog.askopenfilename(
+            initialdir="./resources",
+            title="Select A File",
+            filetypes=(("midi", "*.mid"),("all files", "*.*"))
+        )
+        self.tracks = self.import_song(self.root.filename)
+        self.canvas.delete('all')
+        self.canvas.draw(self.tracks)
 
+
+    def import_song(self, songname):
+        mid = MidiFile(songname)
+        tracks = {}
+
+        for track in mid.tracks:
             # Each note, for example C4 should have (start, end) pair
             current_track_dict = {}
             ticks = 0
 
+            instrument_track = []
             for msg in track:
                 if isinstance(msg, Message) and (msg.type == 'note_on' or msg.type == 'note_off'):
-                    pitch = self.sidebar.notes[msg.note].pitch
+                    pitch = msg.note
                     ticks += msg.time
 
                     # This is the start of a note
@@ -93,16 +109,19 @@ class App:
                         if pitch not in current_track_dict:
                             print("Error: note {pitch} ended before it started")
                         current_track_dict[pitch][1] = ticks
-                        tracks[track.name].append([pitch, current_track_dict[pitch]])
-
+                        start = current_track_dict[pitch][0]
+                        end = current_track_dict[pitch][1]
                         current_track_dict.pop(pitch, 'None')
+                        instrument_track.append((pitch, start , end))
 
-            # Remove empty tracks
-            if len(tracks[track.name]) == 0:
-                tracks.pop(track.name)
+            # Save only the tracks that have notes
+            if len(instrument_track) != 0:
+                if len(track.name) == 0:
+                    track.name = f'track_{len(tracks)}'
+                tracks[track.name] = instrument_track
 
-        print(tracks)
+        return tracks
+
 
     def run(self):
-        self.import_song('resources\song.mid')
         self.root.mainloop()
