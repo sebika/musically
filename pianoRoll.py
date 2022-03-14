@@ -10,7 +10,6 @@ from constants import (
     MIN_ZOOM,
     MAX_ZOOM
 )
-from random import randint, choice
 
 
 class PianoRoll(Canvas):
@@ -22,8 +21,6 @@ class PianoRoll(Canvas):
         self.gridX = CANVAS_GRID_X
         self.gridY = CANVAS_GRID_Y
         self.zoomLevel = 1
-        self.last_x = 0
-        self.last_y = 0
 
         super(PianoRoll, self).__init__(
             parent,
@@ -49,7 +46,7 @@ class PianoRoll(Canvas):
                     tags='note'
                 )
         else:
-            for track_name, notes in tracks.items():
+            for _, notes in tracks.items():
                 for note in notes:
                     note_y = self.get_note_height(note[0])
                     note_start = note[1]
@@ -119,20 +116,11 @@ class PianoRoll(Canvas):
 
 
     def _do_zoom(self, event):
-        x = self.canvasx(event.x)
+        x = 0
         y = self.canvasy(event.y)
         factor = 1.001 ** event.delta
 
-        self.last_x = x
-        self.last_y = y
-
-        can_zoom = True
-        if self.scroll_x.get() == (0.0, 1.0) and factor < 1:
-            can_zoom = False
-        if self.zoomLevel * factor < MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
-            can_zoom = False
-
-        if can_zoom:
+        if self.zoomLevel * factor > MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
             self.zoomLevel *= factor
             self.scale('all', x, y, factor, 1)
 
