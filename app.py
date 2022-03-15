@@ -1,14 +1,9 @@
-from collections import OrderedDict
 import tkinter as tk
-
-from sympy import Order
 from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH
 from pianoRoll import PianoRoll
 from sidebar import PianoNoteSidebar
-from mido import MidiFile, Message
+from mido import MidiFile, Message, tick2second
 from tkinter import filedialog
-
-from timeit import default_timer as timer
 
 
 class App:
@@ -82,15 +77,19 @@ class App:
 
         # Create a new canvas
         self.canvas.grid_remove()
-        self.canvas = PianoRoll(self.root, self.sidebar)
-
-        self.canvas.delete('all')
-        self.canvas.draw(self.tracks)
+        self.canvas = PianoRoll(self.root, self.sidebar, self.tracks)
         self.canvas.configure_scrollbars(self.root)
+
+        l = self.tracks[list(self.tracks.keys())[0]][-1][2]
+        tempo = 461538
+        ticks_per_beat = 96
+        print(f'{l} ticks -> {tick2second(l, ticks_per_beat, tempo)} sec')
+
 
 
     def import_song(self, songname):
         mid = MidiFile(songname)
+        print(mid.ticks_per_beat)
         tracks = {}
 
         for track in mid.tracks:

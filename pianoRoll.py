@@ -13,9 +13,10 @@ from constants import (
 
 
 class PianoRoll(Canvas):
-    def __init__(self, parent, sidebar):
+    def __init__(self, parent, sidebar, tracks=None):
         parent.update()
         self.sidebar = sidebar
+        self.tracks = tracks
         self.width = PIANO_ROLL_WIDTH_PERCENT / 100 * parent.winfo_width()
         self.height = PIANO_ROLL_HEIGHT_PERCENT / 100 * parent.winfo_height()
         self.gridX = CANVAS_GRID_X
@@ -30,7 +31,7 @@ class PianoRoll(Canvas):
             highlightthickness=0
         )
 
-        self.draw()
+        self.draw(self.tracks)
         self.grid(row=self.gridX, column=self.gridY)
 
 
@@ -124,7 +125,7 @@ class PianoRoll(Canvas):
             self.zoomLevel *= factor
             self.scale('all', x, y, factor, 1)
 
-            x1, y1, x2, _ = self.bbox('all')
+            x1, _, x2, _ = self.bbox('all')
             _, _, _, y2 = self.sidebar.bbox('all')
             self.configure(scrollregion=[x1, 0, x2, y2])
 

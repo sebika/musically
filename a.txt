@@ -1,0 +1,238 @@
+Track 0:
+MetaMessage('time_signature', numerator=4, denominator=4, clocks_per_click=24, notated_32nd_notes_per_beat=8, time=0)
+MetaMessage('end_of_track', time=0)
+Track 1:
+MetaMessage('set_tempo', tempo=461538, time=0)
+MetaMessage('end_of_track', time=0)
+Track 2: 808 Kick
+MetaMessage('track_name', name='808 Kick', time=0)
+control_change channel=0 control=10 value=64 time=0
+control_change channel=0 control=7 value=100 time=0
+pitchwheel channel=0 pitch=0 time=0
+control_change channel=0 control=101 value=0 time=0
+control_change channel=0 control=100 value=0 time=0
+control_change channel=0 control=6 value=12 time=0
+control_change channel=0 control=10 value=64 time=0
+control_change channel=0 control=7 value=100 time=0
+pitchwheel channel=0 pitch=0 time=0
+program_change channel=0 program=0 time=0
+control_change channel=0 control=101 value=0 time=0
+control_change channel=0 control=100 value=0 time=0
+control_change channel=0 control=6 value=12 time=0
+control_change channel=0 control=10 value=64 time=0
+control_change channel=0 control=7 value=100 time=0
+pitchwheel channel=0 pitch=0 time=0
+program_change channel=0 program=0 time=0
+note_on channel=0 note=72 velocity=100 time=0
+note_on channel=0 note=60 velocity=100 time=0
+control_change channel=0 control=101 value=0 time=0
+control_change channel=0 control=100 value=0 time=0
+control_change channel=0 control=6 value=12 time=0
+control_change channel=0 control=10 value=64 time=0
+control_change channel=0 control=7 value=100 time=0
+pitchwheel channel=0 pitch=0 time=0
+program_change channel=0 program=0 time=0
+note_off channel=0 note=72 velocity=64 time=96
+note_off channel=0 note=60 velocity=64 time=0
+note_on channel=0 note=73 velocity=100 time=0
+note_on channel=0 note=61 velocity=100 time=0
+note_off channel=0 note=61 velocity=64 time=96
+note_off channel=0 note=73 velocity=64 time=0
+note_on channel=0 note=74 velocity=100 time=0
+note_on channel=0 note=60 velocity=100 time=0
+note_off channel=0 note=60 velocity=64 time=96
+note_off channel=0 note=74 velocity=64 time=0
+note_on channel=0 note=75 velocity=100 time=0
+note_on channel=0 note=61 velocity=100 time=0
+note_off channel=0 note=61 velocity=64 time=96
+note_off channel=0 note=75 velocity=64 time=0
+note_on channel=0 note=76 velocity=100 time=0
+note_off channel=0 note=76 velocity=64 time=96
+note_on channel=0 note=77 velocity=100 time=0
+note_off channel=0 note=77 velocity=64 time=96
+note_on channel=0 note=78 velocity=100 time=0
+note_off channel=0 note=78 velocity=64 time=96
+note_on channel=0 note=79 velocity=100 time=0
+note_off channel=0 note=79 velocity=64 time=96
+note_on channel=0 note=80 velocity=100 time=0
+note_off channel=0 note=80 velocity=64 time=96
+note_on channel=0 note=81 velocity=100 time=0
+note_off channel=0 note=81 velocity=64 time=96
+note_on channel=0 note=82 velocity=100 time=0
+note_off channel=0 note=82 velocity=64 time=96
+note_on channel=0 note=83 velocity=100 time=0
+note_off channel=0 note=83 velocity=64 time=96
+note_on channel=0 note=82 velocity=100 time=0
+note_off channel=0 note=82 velocity=64 time=96
+note_on channel=0 note=81 velocity=100 time=0
+note_off channel=0 note=81 velocity=64 time=96
+control_change channel=0 control=101 value=0 time=192
+control_change channel=0 control=100 value=0 time=0
+control_change channel=0 control=6 value=12 time=0
+control_change channel=0 control=10 value=64 time=0
+control_change channel=0 control=7 value=100 time=0
+pitchwheel channel=0 pitch=0 time=0
+program_change channel=0 program=0 time=0
+control_change channel=0 control=101 value=0 time=2
+control_change channel=0 control=100 value=0 time=0
+control_change channel=0 control=6 value=12 time=0
+control_change channel=0 control=10 value=64 time=0
+control_change channel=0 control=7 value=100 time=0
+pitchwheel channel=0 pitch=0 time=0
+program_change channel=0 program=0 time=0
+MetaMessage('end_of_track', time=0)
+Track 3: 808 Clap
+MetaMessage('track_name', name='808 Clap', time=0)
+control_change channel=1 control=10 value=64 time=0
+control_change channel=1 control=7 value=100 time=0
+pitchwheel channel=1 pitch=0 time=0
+control_change channel=1 control=101 value=0 time=0
+control_change channel=1 control=100 value=0 time=0
+control_change channel=1 control=6 value=12 time=0
+control_change channel=1 control=10 value=64 time=0
+control_change channel=1 control=7 value=100 time=0
+pitchwheel channel=1 pitch=0 time=0
+program_change channel=1 program=0 time=0
+control_change channel=1 control=101 value=0 time=0
+control_change channel=1 control=100 value=0 time=0
+control_change channel=1 control=6 value=12 time=0
+control_change channel=1 control=10 value=64 time=0
+control_change channel=1 control=7 value=100 time=0
+pitchwheel channel=1 pitch=0 time=0
+program_change channel=1 program=0 time=0
+note_on channel=1 note=60 velocity=100 time=0
+control_change channel=1 control=101 value=0 time=0
+control_change channel=1 control=100 value=0 time=0
+control_change channel=1 control=6 value=12 time=0
+control_change channel=1 control=10 value=64 time=0
+control_change channel=1 control=7 value=100 time=0
+pitchwheel channel=1 pitch=0 time=0
+program_change channel=1 program=0 time=0
+note_off channel=1 note=60 velocity=64 time=48
+note_on channel=1 note=61 velocity=100 time=0
+note_off channel=1 note=61 velocity=64 time=48
+note_on channel=1 note=62 velocity=100 time=0
+note_off channel=1 note=62 velocity=64 time=48
+note_on channel=1 note=63 velocity=100 time=0
+note_off channel=1 note=63 velocity=64 time=48
+note_on channel=1 note=64 velocity=100 time=0
+note_off channel=1 note=64 velocity=64 time=48
+note_on channel=1 note=65 velocity=100 time=0
+note_off channel=1 note=65 velocity=64 time=48
+note_on channel=1 note=66 velocity=100 time=0
+note_off channel=1 note=66 velocity=64 time=48
+note_on channel=1 note=67 velocity=100 time=0
+note_off channel=1 note=67 velocity=64 time=48
+control_change channel=1 control=101 value=0 time=1152
+control_change channel=1 control=100 value=0 time=0
+control_change channel=1 control=6 value=12 time=0
+control_change channel=1 control=10 value=64 time=0
+control_change channel=1 control=7 value=100 time=0
+pitchwheel channel=1 pitch=0 time=0
+program_change channel=1 program=0 time=0
+control_change channel=1 control=101 value=0 time=2
+control_change channel=1 control=100 value=0 time=0
+control_change channel=1 control=6 value=12 time=0
+control_change channel=1 control=10 value=64 time=0
+control_change channel=1 control=7 value=100 time=0
+pitchwheel channel=1 pitch=0 time=0
+program_change channel=1 program=0 time=0
+MetaMessage('end_of_track', time=0)
+Track 4: 808 HiHat
+MetaMessage('track_name', name='808 HiHat', time=0)
+control_change channel=2 control=10 value=64 time=0
+control_change channel=2 control=7 value=100 time=0
+pitchwheel channel=2 pitch=0 time=0
+control_change channel=2 control=101 value=0 time=0
+control_change channel=2 control=100 value=0 time=0
+control_change channel=2 control=6 value=12 time=0
+control_change channel=2 control=10 value=64 time=0
+control_change channel=2 control=7 value=100 time=0
+pitchwheel channel=2 pitch=0 time=0
+program_change channel=2 program=0 time=0
+control_change channel=2 control=101 value=0 time=0
+control_change channel=2 control=100 value=0 time=0
+control_change channel=2 control=6 value=12 time=0
+control_change channel=2 control=10 value=64 time=0
+control_change channel=2 control=7 value=100 time=0
+pitchwheel channel=2 pitch=0 time=0
+program_change channel=2 program=0 time=0
+note_on channel=2 note=60 velocity=100 time=0
+control_change channel=2 control=101 value=0 time=0
+control_change channel=2 control=100 value=0 time=0
+control_change channel=2 control=6 value=12 time=0
+control_change channel=2 control=10 value=64 time=0
+control_change channel=2 control=7 value=100 time=0
+pitchwheel channel=2 pitch=0 time=0
+program_change channel=2 program=0 time=0
+note_on channel=2 note=59 velocity=100 time=24
+note_off channel=2 note=60 velocity=64 time=24
+note_on channel=2 note=58 velocity=100 time=0
+note_off channel=2 note=59 velocity=64 time=24
+note_on channel=2 note=57 velocity=100 time=0
+note_off channel=2 note=58 velocity=64 time=24
+note_on channel=2 note=56 velocity=100 time=0
+note_off channel=2 note=57 velocity=64 time=24
+note_on channel=2 note=55 velocity=100 time=0
+note_off channel=2 note=56 velocity=64 time=24
+note_on channel=2 note=54 velocity=100 time=0
+note_off channel=2 note=55 velocity=64 time=24
+note_on channel=2 note=53 velocity=100 time=0
+note_off channel=2 note=54 velocity=64 time=24
+note_off channel=2 note=53 velocity=64 time=24
+control_change channel=2 control=101 value=0 time=1320
+control_change channel=2 control=100 value=0 time=0
+control_change channel=2 control=6 value=12 time=0
+control_change channel=2 control=10 value=64 time=0
+control_change channel=2 control=7 value=100 time=0
+pitchwheel channel=2 pitch=0 time=0
+program_change channel=2 program=0 time=0
+control_change channel=2 control=101 value=0 time=2
+control_change channel=2 control=100 value=0 time=0
+control_change channel=2 control=6 value=12 time=0
+control_change channel=2 control=10 value=64 time=0
+control_change channel=2 control=7 value=100 time=0
+pitchwheel channel=2 pitch=0 time=0
+program_change channel=2 program=0 time=0
+MetaMessage('end_of_track', time=0)
+Track 5: 808 Snare
+MetaMessage('track_name', name='808 Snare', time=0)
+control_change channel=3 control=10 value=64 time=0
+control_change channel=3 control=7 value=100 time=0
+pitchwheel channel=3 pitch=0 time=0
+control_change channel=3 control=101 value=0 time=0
+control_change channel=3 control=100 value=0 time=0
+control_change channel=3 control=6 value=12 time=0
+control_change channel=3 control=10 value=64 time=0
+control_change channel=3 control=7 value=100 time=0
+pitchwheel channel=3 pitch=0 time=0
+program_change channel=3 program=0 time=0
+control_change channel=3 control=101 value=0 time=0
+control_change channel=3 control=100 value=0 time=0
+control_change channel=3 control=6 value=12 time=0
+control_change channel=3 control=10 value=64 time=0
+control_change channel=3 control=7 value=100 time=0
+pitchwheel channel=3 pitch=0 time=0
+program_change channel=3 program=0 time=0
+control_change channel=3 control=101 value=0 time=0
+control_change channel=3 control=100 value=0 time=0
+control_change channel=3 control=6 value=12 time=0
+control_change channel=3 control=10 value=64 time=0
+control_change channel=3 control=7 value=100 time=0
+pitchwheel channel=3 pitch=0 time=0
+program_change channel=3 program=0 time=0
+control_change channel=3 control=101 value=0 time=1536
+control_change channel=3 control=100 value=0 time=0
+control_change channel=3 control=6 value=12 time=0
+control_change channel=3 control=10 value=64 time=0
+control_change channel=3 control=7 value=100 time=0
+pitchwheel channel=3 pitch=0 time=0
+program_change channel=3 program=0 time=0
+control_change channel=3 control=101 value=0 time=2
+control_change channel=3 control=100 value=0 time=0
+control_change channel=3 control=6 value=12 time=0
+control_change channel=3 control=10 value=64 time=0
+control_change channel=3 control=7 value=100 time=0
+pitchwheel channel=3 pitch=0 time=0
+program_change channel=3 program=0 time=0
+MetaMessage('end_of_track', time=0)
