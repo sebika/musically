@@ -15,7 +15,6 @@ from constants import (
     TRACKS_SIDEBAR_WIDTH_PERCENT,
     TRACKS_SIDEBAR_HEIGHT_PERCENT
 )
-from note import SidebarNote
 
 class PianoNoteSidebar(Canvas):
     def __init__(self, parent):
@@ -53,11 +52,11 @@ class PianoNoteSidebar(Canvas):
             C = SidebarNote(0, offset + h*10.5, self.width, offset + h*12, COLOR_PALETTE['aero_blue'], f'C{i}', self, True)
 
             # Semitones
-            A_sharp = SidebarNote(0, offset + h, self.width*0.75, offset + h*2, COLOR_PALETTE['black_coral'], f'A#{i}', self)
-            G_sharp = SidebarNote(0, offset + h*3, self.width*0.75, offset + h*4, COLOR_PALETTE['black_coral'], f'G#{i}', self)
-            F_sharp = SidebarNote(0, offset + h*5, self.width*0.75, offset + h*6, COLOR_PALETTE['black_coral'], f'F#{i}', self)
-            D_sharp = SidebarNote(0, offset + h*8, self.width*0.75, offset + h*9, COLOR_PALETTE['black_coral'], f'D#{i}', self)
-            C_sharp = SidebarNote(0, offset + h*10, self.width*0.75, offset + h*11, COLOR_PALETTE['black_coral'], f'C#{i}', self)
+            A_sharp = SidebarNote(0, offset + h, self.width*0.75, offset + h*2, COLOR_PALETTE['space_cadet'], f'A#{i}', self)
+            G_sharp = SidebarNote(0, offset + h*3, self.width*0.75, offset + h*4, COLOR_PALETTE['space_cadet'], f'G#{i}', self)
+            F_sharp = SidebarNote(0, offset + h*5, self.width*0.75, offset + h*6, COLOR_PALETTE['space_cadet'], f'F#{i}', self)
+            D_sharp = SidebarNote(0, offset + h*8, self.width*0.75, offset + h*9, COLOR_PALETTE['space_cadet'], f'D#{i}', self)
+            C_sharp = SidebarNote(0, offset + h*10, self.width*0.75, offset + h*11, COLOR_PALETTE['space_cadet'], f'C#{i}', self)
 
             self.notes += [B, A_sharp, A, G_sharp, G, F_sharp, F, E, D_sharp, D, C_sharp, C]
 
@@ -91,6 +90,26 @@ class PianoNoteSidebar(Canvas):
         self.config(width=self.width, height=self.height)
 
 
+class SidebarNote():
+    def __init__(self, x, y, width, height, color, pitch, canvas, addNoteText=False):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.color = color
+        self.pitch = pitch
+        self.id = canvas.create_rectangle(x, y, width, height, fill=color)
+        self.textId = None
+
+        if addNoteText:
+            self.textId = canvas.create_text(0, 0, text=self.pitch)
+
+        if pitch.find('#') != -1:
+            canvas.itemconfig(self.id, activefill='black')
+        else:
+            canvas.itemconfig(self.id, activefill=COLOR_PALETTE['blue_gray'])
+
+
 class MusicPlayer(Frame):
     def __init__(self, parent):
         parent.update()
@@ -101,23 +120,23 @@ class MusicPlayer(Frame):
             parent,
             width=self.width,
             height=self.height,
-            background='white',
+            background=COLOR_PALETTE['black_coral'],
         )
 
         self.backward_image = PhotoImage(file='resources/images/backward.png').subsample(5)
-        self.backward_button = Button(self, image=self.backward_image, borderwidth=0)
+        self.backward_button = Button(self, image=self.backward_image, borderwidth=0, highlightthickness=0)
         self.backward_button.place(relx=0.45, rely=0.5, anchor=CENTER)
 
         self.play_image = PhotoImage(file='resources/images/play.png').subsample(5)
-        self.play_button = Button(self, image=self.play_image, borderwidth=0)
+        self.play_button = Button(self, image=self.play_image, borderwidth=0, highlightthickness=0)
         self.play_button.place(relx=0.5, rely=0.5, anchor=CENTER)
 
         self.forward_image = PhotoImage(file='resources/images/forward.png').subsample(5)
-        self.forward_button = Button(self, image=self.forward_image, borderwidth=0)
+        self.forward_button = Button(self, image=self.forward_image, borderwidth=0, highlightthickness=0)
         self.forward_button.place(relx=0.55, rely=0.5, anchor=CENTER)
 
         self.stop_image = PhotoImage(file='resources/images/stop.png').subsample(5)
-        self.stop_button = Button(self, image=self.stop_image, borderwidth=0)
+        self.stop_button = Button(self, image=self.stop_image, borderwidth=0, highlightthickness=0)
         self.stop_button.place(relx=0.975, rely=0.5, anchor=CENTER)
 
         self.grid(row=0, column=1, columnspan=3, sticky='w')
@@ -140,35 +159,12 @@ class TrackSidebar(Frame):
             parent,
             width=self.width,
             height=self.height,
-            background='lightgray',
+            background=COLOR_PALETTE['black_coral'],
         )
 
-
-        self.selected = BooleanVar(value=False)
-
-        self.cb = Button(
-            self,
-            text="Mute ON",
-            bg='green',
-            activebackground='green',
-            command=self.change
-        )
-        self.cb.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.btn1 = TrackSidebarButton(self, 'Track 1')
 
         self.grid(row=1, column=0, rowspan=2, stick='S')
-
-    def change(self):
-        self.selected.set(not self.selected.get())
-        if self.selected.get():
-            self.cb['text'] = 'Mute OFF'
-            self.cb['bg'] = 'red'
-            self.cb['activebackground'] = 'red'
-            #cb['highlightbackground'] = 'red'
-        else:
-            self.cb['text'] = 'Mute ON'
-            self.cb['bg'] = 'green'
-            self.cb['activebackground'] = 'green'
-            #cb['highlightbackground'] = 'green'
 
     def updateSize(self, event, parent):
         parent.update()
@@ -176,3 +172,28 @@ class TrackSidebar(Frame):
         self.height = TRACKS_SIDEBAR_HEIGHT_PERCENT / 100 * parent.winfo_height()
 
         self.config(width=self.width, height=self.height)
+
+
+class TrackSidebarButton(Button):
+    def __init__(self, parent, text):
+        super(TrackSidebarButton, self).__init__(
+            parent,
+            text=text,
+            bg='lightgray',
+            activebackground ='lightgray',
+            width=int(parent.width//15),
+            height=int(parent.width//30),
+            command=self.change
+        )
+        self.selected = BooleanVar(value=False)
+        self.place(relx=0.5, y=30, anchor=CENTER)
+
+
+    def change(self):
+        self.selected.set(not self.selected.get())
+        if self.selected.get():
+            self['bg'] = COLOR_PALETTE['bitter_lime']
+            self['activebackground'] = COLOR_PALETTE['bitter_lime']
+        else:
+            self['bg'] = 'lightgray'
+            self['activebackground'] = 'lightgray'

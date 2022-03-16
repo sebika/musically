@@ -16,14 +16,12 @@ class App:
         self.trackSidebar = TrackSidebar(self.root)
 
         self.root.update()
-        l1 = tk.Label(self.root, text='(0, 0)')
-        l1.grid(row=0, column=0)
 
         self.init_window()
         self.init_menu()
 
         self.root.bind('<Configure>', self.updateSize)
-        self.root.configure(bg='white')
+        self.root.configure(bg=COLOR_PALETTE['black_coral'])
 
 
     def init_window(self):
