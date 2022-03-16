@@ -1,7 +1,7 @@
 import tkinter as tk
-from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH
+from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH, COLOR_PALETTE
 from pianoRoll import PianoRoll
-from sidebar import PianoNoteSidebar
+from sidebar import PianoNoteSidebar, MusicPlayer, TrackSidebar
 from mido import MidiFile, Message, tick2second
 from tkinter import filedialog
 
@@ -11,20 +11,13 @@ class App:
         self.root = tk.Tk()
         self.sidebar = PianoNoteSidebar(self.root)
         self.canvas = PianoRoll(self.root, self.sidebar)
-
         self.canvas.configure_scrollbars(self.root)
+        self.musicPlayer = MusicPlayer(self.root)
+        self.trackSidebar = TrackSidebar(self.root)
 
         self.root.update()
         l1 = tk.Label(self.root, text='(0, 0)')
         l1.grid(row=0, column=0)
-
-        self.root.update()
-        l2 = tk.Frame(self.root, background='lightgray', width=ROOT_INITIAL_WIDTH*0.86, height=100)
-        l2.grid(row=0, column=1, columnspan=3, sticky='w')
-
-        self.root.update()
-        l3 = tk.Frame(self.root, background='lightgray', width=100, height=ROOT_INITIAL_HEIGHT* 0.75)
-        l3.grid(row=1, column=0, rowspan=2, stick='S')
 
         self.init_window()
         self.init_menu()
@@ -42,7 +35,7 @@ class App:
             f'{ROOT_INITIAL_WIDTH}x{ROOT_INITIAL_HEIGHT}+{pixelsRight}+{pixelsDown}'
         )
         self.root.deiconify()
-        self.root.iconphoto(True, tk.PhotoImage(file='resources/logo.png'))
+        self.root.iconphoto(True, tk.PhotoImage(file='resources/images/logo.png'))
         self.root.title('Musically')
 
 
@@ -65,13 +58,15 @@ class App:
     def updateSize(self, event):
         self.canvas.updateSize(event, self.root)
         self.sidebar.updateSize(event, self.root)
+        self.musicPlayer.updateSize(event, self.root)
+        self.trackSidebar.updateSize(event, self.root)
 
 
     def _open_file(self):
         self.root.filename = filedialog.askopenfilename(
-            initialdir="./resources",
-            title="Select A File",
-            filetypes=(("midi", "*.mid"),("all files", "*.*"))
+            initialdir='./resources',
+            title='Select A File',
+            filetypes=(('midi', '*.mid'),('all files', '*.*'))
         )
         self.tracks = self.import_song(self.root.filename)
 
@@ -83,13 +78,11 @@ class App:
         l = self.tracks[list(self.tracks.keys())[0]][-1][2]
         tempo = 461538
         ticks_per_beat = 96
-        print(f'{l} ticks -> {tick2second(l, ticks_per_beat, tempo)} sec')
-
+        # print(f'{l} ticks -> {tick2second(l, ticks_per_beat, tempo)} sec')
 
 
     def import_song(self, songname):
         mid = MidiFile(songname)
-        print(mid.ticks_per_beat)
         tracks = {}
 
         for track in mid.tracks:
@@ -106,13 +99,16 @@ class App:
                     # This is the start of a note
                     if msg.type == 'note_on' and msg.velocity != 0:
                         if pitch in current_track_dict:
-                            print("Error: note {pitch} starts playing again before it ended")
+                            print(f'Info: note {pitch} starts playing again before it ended')
+
                         current_track_dict[pitch] = [ticks, -1]
 
                     # This is the and of a note
                     elif (msg.type == 'note_on' and msg.velocity == 0) or msg.type == 'note_off':
                         if pitch not in current_track_dict:
-                            print("Error: note {pitch} ended before it started")
+                            print(f'Info: note {pitch} ended before it started')
+                            continue
+
                         current_track_dict[pitch][1] = ticks
                         start = current_track_dict[pitch][0]
                         end = current_track_dict[pitch][1]

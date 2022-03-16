@@ -28,7 +28,8 @@ class PianoRoll(Canvas):
             width=self.width,
             height=self.height,
             bg='#34444e',
-            highlightthickness=0
+            highlightthickness=1,
+            highlightbackground='black'
         )
 
         self.draw(self.tracks)
@@ -59,12 +60,12 @@ class PianoRoll(Canvas):
                         fill=COLOR_PALETTE['naples_yellow'],
                         tags='note'
                     )
-        self.create_rectangle(0, 0, 5, self.get_note_height(0), fill='red')
+        self.timestamp = self.create_rectangle(0, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red')
 
 
     def configure_scrollbars(self, parent):
         self.bind('<Control-MouseWheel>', self._do_zoom)
-        self.bind("<MouseWheel>", self._on_mousewheel)
+        self.bind('<MouseWheel>', self._on_mousewheel)
 
         # self.bind('<ButtonPress-1>', lambda event: (
         #     self.scan_mark(event.x, event.y),
@@ -124,6 +125,9 @@ class PianoRoll(Canvas):
         if self.zoomLevel * factor > MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
             self.zoomLevel *= factor
             self.scale('all', x, y, factor, 1)
+
+            # Scale back the red timestamp line
+            self.scale(self.timestamp, x, y, 1/factor, 1)
 
             x1, _, x2, _ = self.bbox('all')
             _, _, _, y2 = self.sidebar.bbox('all')

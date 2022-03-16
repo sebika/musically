@@ -1,12 +1,19 @@
 from cgitb import text
-from tkinter import Canvas
+from tkinter import CENTER, BooleanVar, Button, Canvas, Checkbutton, Frame, PhotoImage, Radiobutton, StringVar, IntVar
 from constants import (
     CANVAS_GRID_X,
     CANVAS_GRID_Y,
     NOTE_THICKNESS,
+    ROOT_INITIAL_HEIGHT,
     SIDEBAR_PIANO_HEIGHT_PERCENT,
     SIDEBAR_PIANO_WIDTH_PERCENT,
     COLOR_PALETTE,
+    ROOT_INITIAL_WIDTH,
+    SIDEBAR_PIANO_WIDTH_PERCENT,
+    MUSIC_PLAYER_WIDTH_PERCENT,
+    MUSIC_PLAYER_HEIGHT_PERCENT,
+    TRACKS_SIDEBAR_WIDTH_PERCENT,
+    TRACKS_SIDEBAR_HEIGHT_PERCENT
 )
 from note import SidebarNote
 
@@ -75,10 +82,97 @@ class PianoNoteSidebar(Canvas):
             if note.pitch.find('#') != -1:
                 note.width *= 0.65
 
-            self.coords(note.id, note.x, note.y, note.width, note.height)
+            self.coords(note.id, note.x-1, note.y, note.width, note.height)
             if note.textId:
                 self.coords(note.textId, (note.x + note.width) - 11, (note.y + note.height) // 2)
 
         self.configure(scrollregion=self.bbox('all'))
+
+        self.config(width=self.width, height=self.height)
+
+
+class MusicPlayer(Frame):
+    def __init__(self, parent):
+        parent.update()
+        self.width = ROOT_INITIAL_WIDTH * MUSIC_PLAYER_WIDTH_PERCENT / 100
+        self.height = ROOT_INITIAL_HEIGHT * MUSIC_PLAYER_HEIGHT_PERCENT / 100
+
+        super(MusicPlayer, self).__init__(
+            parent,
+            width=self.width,
+            height=self.height,
+            background='white',
+        )
+
+        self.backward_image = PhotoImage(file='resources/images/backward.png').subsample(5)
+        self.backward_button = Button(self, image=self.backward_image, borderwidth=0)
+        self.backward_button.place(relx=0.45, rely=0.5, anchor=CENTER)
+
+        self.play_image = PhotoImage(file='resources/images/play.png').subsample(5)
+        self.play_button = Button(self, image=self.play_image, borderwidth=0)
+        self.play_button.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        self.forward_image = PhotoImage(file='resources/images/forward.png').subsample(5)
+        self.forward_button = Button(self, image=self.forward_image, borderwidth=0)
+        self.forward_button.place(relx=0.55, rely=0.5, anchor=CENTER)
+
+        self.stop_image = PhotoImage(file='resources/images/stop.png').subsample(5)
+        self.stop_button = Button(self, image=self.stop_image, borderwidth=0)
+        self.stop_button.place(relx=0.975, rely=0.5, anchor=CENTER)
+
+        self.grid(row=0, column=1, columnspan=3, sticky='w')
+
+    def updateSize(self, event, parent):
+        parent.update()
+        self.width = MUSIC_PLAYER_WIDTH_PERCENT / 100 * parent.winfo_width()
+        self.height = MUSIC_PLAYER_HEIGHT_PERCENT / 100 * parent.winfo_height()
+
+        self.config(width=self.width, height=self.height)
+
+
+class TrackSidebar(Frame):
+    def __init__(self, parent):
+        parent.update()
+        self.width = ROOT_INITIAL_WIDTH * TRACKS_SIDEBAR_WIDTH_PERCENT / 100
+        self.height = ROOT_INITIAL_HEIGHT * TRACKS_SIDEBAR_HEIGHT_PERCENT / 100
+
+        super(TrackSidebar, self).__init__(
+            parent,
+            width=self.width,
+            height=self.height,
+            background='lightgray',
+        )
+
+
+        self.selected = BooleanVar(value=False)
+
+        self.cb = Button(
+            self,
+            text="Mute ON",
+            bg='green',
+            activebackground='green',
+            command=self.change
+        )
+        self.cb.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        self.grid(row=1, column=0, rowspan=2, stick='S')
+
+    def change(self):
+        self.selected.set(not self.selected.get())
+        if self.selected.get():
+            self.cb['text'] = 'Mute OFF'
+            self.cb['bg'] = 'red'
+            self.cb['activebackground'] = 'red'
+            #cb['highlightbackground'] = 'red'
+        else:
+            self.cb['text'] = 'Mute ON'
+            self.cb['bg'] = 'green'
+            self.cb['activebackground'] = 'green'
+            #cb['highlightbackground'] = 'green'
+
+    def updateSize(self, event, parent):
+        parent.update()
+        self.width = TRACKS_SIDEBAR_WIDTH_PERCENT / 100 * parent.winfo_width()
+        self.height = TRACKS_SIDEBAR_HEIGHT_PERCENT / 100 * parent.winfo_height()
 
         self.config(width=self.width, height=self.height)
