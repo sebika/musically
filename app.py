@@ -23,7 +23,6 @@ class App:
         self.root.bind('<Configure>', self.updateSize)
         self.root.configure(bg=COLOR_PALETTE['black_coral'])
 
-
     def init_window(self):
         self.screenWidth = self.root.winfo_screenwidth()
         self.screenHeight = self.root.winfo_screenheight()
@@ -62,7 +61,7 @@ class App:
 
     def _open_file(self):
         self.root.filename = filedialog.askopenfilename(
-            initialdir='./resources',
+            initialdir='./resources/songs',
             title='Select A File',
             filetypes=(('midi', '*.mid'),('all files', '*.*'))
         )
@@ -72,6 +71,19 @@ class App:
         self.canvas.grid_remove()
         self.canvas = PianoRoll(self.root, self.sidebar, self.tracks)
         self.canvas.configure_scrollbars(self.root)
+
+        for i, track_name in enumerate(list(self.tracks.keys())):
+            self.trackSidebar.buttons[i].show()
+            self.trackSidebar.buttons[i]['text'] = track_name
+        for i in range(len(self.tracks.keys()), len(self.trackSidebar.buttons)):
+            self.trackSidebar.buttons[i].hide()
+
+        # Snap to the first note
+        h = 10 ** 6
+        for track_name, notes in self.tracks.items():
+            h = min(h, self.canvas.get_note_height(notes[0][0]))
+        self.canvas.yview_moveto(h / self.canvas.get_note_height(0) - 0.1)
+        self.sidebar.yview_moveto(h / self.canvas.get_note_height(0) - 0.1)
 
         l = self.tracks[list(self.tracks.keys())[0]][-1][2]
         tempo = 461538

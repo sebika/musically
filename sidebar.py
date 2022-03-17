@@ -152,6 +152,7 @@ class MusicPlayer(Frame):
 class TrackSidebar(Frame):
     def __init__(self, parent):
         parent.update()
+        self.parent = parent
         self.width = ROOT_INITIAL_WIDTH * TRACKS_SIDEBAR_WIDTH_PERCENT / 100
         self.height = ROOT_INITIAL_HEIGHT * TRACKS_SIDEBAR_HEIGHT_PERCENT / 100
 
@@ -161,10 +162,17 @@ class TrackSidebar(Frame):
             height=self.height,
             background=COLOR_PALETTE['black_coral'],
         )
-
-        self.btn1 = TrackSidebarButton(self, 'Track 1')
+        self.buttons = []
+        tracks = [f'Track {i}' for i in range(6)]
+        self.draw(tracks)
 
         self.grid(row=1, column=0, rowspan=2, stick='S')
+
+    def draw(self, track_names):
+        offset = 0
+        for i, track_name in enumerate(track_names):
+            self.buttons.append(TrackSidebarButton(self, track_name, offset))
+            offset += self.height // 6
 
     def updateSize(self, event, parent):
         parent.update()
@@ -175,25 +183,38 @@ class TrackSidebar(Frame):
 
 
 class TrackSidebarButton(Button):
-    def __init__(self, parent, text):
+    def __init__(self, parent, text, offset):
         super(TrackSidebarButton, self).__init__(
             parent,
             text=text,
             bg='lightgray',
             activebackground ='lightgray',
-            width=int(parent.width//15),
-            height=int(parent.width//30),
+            width=int(parent.width//10),
+            height=int(parent.width//20),
+            wraplength=70,
             command=self.change
         )
+        offset += 3000
         self.selected = BooleanVar(value=False)
-        self.place(relx=0.5, y=30, anchor=CENTER)
+        self.place(relx=0.5, y=50+offset, anchor=CENTER)
+        self.y = 50+offset
+
+
+    def show(self):
+        if self.y > 3000:
+            self.y -= 3000
+            self.place(y=self.y)
+
+
+    def hide(self):
+        if self.y < 3000:
+            self.y += 3000
+            self.place(y=self.y)
 
 
     def change(self):
         self.selected.set(not self.selected.get())
         if self.selected.get():
-            self['bg'] = COLOR_PALETTE['bitter_lime']
-            self['activebackground'] = COLOR_PALETTE['bitter_lime']
+            self.configure(bg=COLOR_PALETTE['bitter_lime'], activebackground=COLOR_PALETTE['bitter_lime'])
         else:
-            self['bg'] = 'lightgray'
-            self['activebackground'] = 'lightgray'
+            self.configure(bg='lightgray', activebackground='lightgray')

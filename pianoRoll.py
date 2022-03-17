@@ -37,17 +37,7 @@ class PianoRoll(Canvas):
 
 
     def draw(self, tracks=None):
-        if tracks == None:
-            default_notes = ['C10', 'C#10', 'D10', 'D#10', 'E10', 'F10', 'F#10', 'G10', 'G#10', 'A10', 'A#10', 'B10']
-            for i, note in enumerate(default_notes):
-                note_y = self.get_note_height(self.string_to_numeric_note(note))
-                self.create_rectangle(
-                    100*i, note_y,
-                    100+100*i, note_y + NOTE_THICKNESS,
-                    fill=COLOR_PALETTE['naples_yellow'],
-                    tags='note'
-                )
-        else:
+        if tracks:
             for _, notes in tracks.items():
                 for note in notes:
                     note_y = self.get_note_height(note[0])
