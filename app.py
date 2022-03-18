@@ -1,5 +1,6 @@
 import tkinter as tk
-from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH, COLOR_PALETTE
+from common import Track
+from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH, COLOR_PALETTE, TRACKS_PATELLTE
 from pianoRoll import PianoRoll
 from sidebar import PianoNoteSidebar, MusicPlayer, TrackSidebar
 from mido import MidiFile, Message, tick2second
@@ -9,6 +10,9 @@ from tkinter import filedialog
 class App:
     def __init__(self):
         self.root = tk.Tk()
+        self.root.parent = self
+        self.tracks = None
+
         self.sidebar = PianoNoteSidebar(self.root)
         self.canvas = PianoRoll(self.root, self.sidebar)
         self.canvas.configure_scrollbars(self.root)
@@ -45,7 +49,6 @@ class App:
         fileMenu.add_command(label='Exit', command=self.root.destroy)
         self.menu.add_cascade(label='File', menu=fileMenu)
 
-        self.menu.add_cascade(label='Edit')
         self.menu.add_cascade(label='View')
         self.menu.add_cascade(label='Help')
 
@@ -72,20 +75,24 @@ class App:
         self.canvas = PianoRoll(self.root, self.sidebar, self.tracks)
         self.canvas.configure_scrollbars(self.root)
 
-        for i, track_name in enumerate(list(self.tracks.keys())):
+        for i, track in enumerate(self.tracks):
             self.trackSidebar.buttons[i].show()
-            self.trackSidebar.buttons[i]['text'] = track_name
-        for i in range(len(self.tracks.keys()), len(self.trackSidebar.buttons)):
+            self.trackSidebar.buttons[i]['text'] = track.name
+        for i in range(len(self.tracks), len(self.trackSidebar.buttons)):
             self.trackSidebar.buttons[i].hide()
 
         # Snap to the first note
         h = 10 ** 6
-        for track_name, notes in self.tracks.items():
-            h = min(h, self.canvas.get_note_height(notes[0][0]))
+        for track in self.tracks:
+            h = min(h, self.canvas.get_note_height(track.notes[0][0]))
         self.canvas.yview_moveto(h / self.canvas.get_note_height(0) - 0.1)
         self.sidebar.yview_moveto(h / self.canvas.get_note_height(0) - 0.1)
 
-        l = self.tracks[list(self.tracks.keys())[0]][-1][2]
+        # Update track button colors
+        for btn in self.trackSidebar.buttons:
+            btn.update_color()
+
+        l = self.tracks[0].notes[-1][2]
         tempo = 461538
         ticks_per_beat = 96
         # print(f'{l} ticks -> {tick2second(l, ticks_per_beat, tempo)} sec')
@@ -93,8 +100,9 @@ class App:
 
     def import_song(self, songname):
         mid = MidiFile(songname)
-        tracks = {}
+        tracks = []
 
+        i = 0
         for track in mid.tracks:
             # Each note, for example C4 should have (start, end) pair
             current_track_dict = {}
@@ -129,7 +137,8 @@ class App:
             if len(instrument_track) != 0:
                 if len(track.name) == 0:
                     track.name = f'track_{len(tracks)}'
-                tracks[track.name] = instrument_track
+                tracks.append(Track(track.name, instrument_track, TRACKS_PATELLTE[list(TRACKS_PATELLTE.keys())[i]]))
+                i += 1
 
         return tracks
 

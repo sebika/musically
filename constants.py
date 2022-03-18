@@ -19,6 +19,8 @@ MUSIC_PLAYER_HEIGHT_PERCENT = 10
 TRACKS_SIDEBAR_WIDTH_PERCENT = 8
 TRACKS_SIDEBAR_HEIGHT_PERCENT = SIDEBAR_PIANO_HEIGHT_PERCENT
 
+MAX_NUMBER_OF_TRACKS = 8
+
 
 COLOR_PALETTE = {
     'honeydew': '#F1FFE7',
@@ -30,4 +32,15 @@ COLOR_PALETTE = {
     'nickel': '#6A706E',
     'naples_yellow': '#F9DC5C',
     'black_coral': '#465362'
+}
+
+TRACKS_PATELLTE = {
+    'yellow': '#F9DC5C',
+    'blue': '#1F77B4',
+    'pink': '#E377C2',
+    'purple': '#9467BD',
+    'orange': '#FF7F0E',
+    'brown': '#8C564B',
+    'cyan': '#17BDCE',
+    'gray': '#7F7F7F',
 }

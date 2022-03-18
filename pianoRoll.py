@@ -8,7 +8,8 @@ from constants import (
     NOTE_THICKNESS,
     COLOR_PALETTE,
     MIN_ZOOM,
-    MAX_ZOOM
+    MAX_ZOOM,
+    TRACKS_PATELLTE
 )
 
 
@@ -38,8 +39,8 @@ class PianoRoll(Canvas):
 
     def draw(self, tracks=None):
         if tracks:
-            for _, notes in tracks.items():
-                for note in notes:
+            for i, track in enumerate(tracks):
+                for note in track.notes:
                     note_y = self.get_note_height(note[0])
                     note_start = note[1]
                     note_end = note[2]
@@ -47,8 +48,9 @@ class PianoRoll(Canvas):
                     self.create_rectangle(
                         note_start, note_y,
                         note_end, note_y + NOTE_THICKNESS,
-                        fill=COLOR_PALETTE['naples_yellow'],
-                        tags='note'
+                        fill=track.color,
+                        activefill='lightgray',
+                        tags=f'track_{i}',
                     )
         self.timestamp = self.create_rectangle(0, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red')
 

@@ -3,6 +3,7 @@ from tkinter import CENTER, BooleanVar, Button, Canvas, Checkbutton, Frame, Phot
 from constants import (
     CANVAS_GRID_X,
     CANVAS_GRID_Y,
+    MAX_NUMBER_OF_TRACKS,
     NOTE_THICKNESS,
     ROOT_INITIAL_HEIGHT,
     SIDEBAR_PIANO_HEIGHT_PERCENT,
@@ -163,7 +164,7 @@ class TrackSidebar(Frame):
             background=COLOR_PALETTE['black_coral'],
         )
         self.buttons = []
-        tracks = [f'Track {i}' for i in range(6)]
+        tracks = [f'Track {i}' for i in range(MAX_NUMBER_OF_TRACKS)]
         self.draw(tracks)
 
         self.grid(row=1, column=0, rowspan=2, stick='S')
@@ -171,8 +172,8 @@ class TrackSidebar(Frame):
     def draw(self, track_names):
         offset = 0
         for i, track_name in enumerate(track_names):
-            self.buttons.append(TrackSidebarButton(self, track_name, offset))
-            offset += self.height // 6
+            self.buttons.append(TrackSidebarButton(self, track_name, offset, i))
+            offset += self.height // 8
 
     def updateSize(self, event, parent):
         parent.update()
@@ -183,38 +184,63 @@ class TrackSidebar(Frame):
 
 
 class TrackSidebarButton(Button):
-    def __init__(self, parent, text, offset):
+    def __init__(self, parent, text, offset, id):
+        self.parent = parent
+        self.id = id
+        self.selected = BooleanVar(value=True)
+        self.on_color = COLOR_PALETTE['bitter_lime']
+
         super(TrackSidebarButton, self).__init__(
             parent,
             text=text,
-            bg='lightgray',
-            activebackground ='lightgray',
-            width=int(parent.width//10),
-            height=int(parent.width//20),
+            bg=self.on_color,
+            activebackground =self.on_color,
+            width=int(parent.width//15),
+            height=int(parent.width//30),
             wraplength=70,
             command=self.change
         )
-        offset += 3000
-        self.selected = BooleanVar(value=False)
-        self.place(relx=0.5, y=50+offset, anchor=CENTER)
-        self.y = 50+offset
+        self.update_color()
+        offset -= 3000
+        self.place(relx=0.5, y=30+offset, anchor=CENTER)
+        self.y = 30+offset
+
+
+    def update_color(self):
+        tracks = self.parent.parent.parent.tracks
+        if tracks and self.id < len(tracks):
+            self.on_color = tracks[self.id].color
+        self.off_color = 'lightgray'
+
+        if self.selected.get():
+            self.configure(bg=self.on_color, activebackground=self.on_color)
+        else:
+            self.configure(bg=self.off_color, activebackground=self.off_color)
 
 
     def show(self):
-        if self.y > 3000:
-            self.y -= 3000
-            self.place(y=self.y)
-
-
-    def hide(self):
-        if self.y < 3000:
+        if self.y < 0:
             self.y += 3000
             self.place(y=self.y)
 
 
+    def hide(self):
+        if self.y > 0:
+            self.y -= 3000
+            self.place(y=self.y)
+
+
     def change(self):
+        canvas = self.parent.parent.parent.canvas
+        track_notes = list(canvas.find_withtag(f'track_{self.id}'))
         self.selected.set(not self.selected.get())
         if self.selected.get():
-            self.configure(bg=COLOR_PALETTE['bitter_lime'], activebackground=COLOR_PALETTE['bitter_lime'])
+            self.configure(bg=self.on_color, activebackground=self.on_color)
+            for note in track_notes:
+                canvas.itemconfigure(note, state='normal')
+                canvas.tag_raise(note)
+            canvas.tag_raise(canvas.timestamp)
         else:
-            self.configure(bg='lightgray', activebackground='lightgray')
+            self.configure(bg=self.off_color, activebackground=self.off_color)
+            for note in track_notes:
+                canvas.itemconfigure(note, state='hidden')
