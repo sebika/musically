@@ -9,3 +9,8 @@ If `pygame.mixer` doesn't work:
 
 Play midi in windows (not really necessary):
    - https://ksvi.mff.cuni.cz/~dingle/2019/prog_1/python_music.html
+
+Convert `midi` to `wav` in linux:
+```
+   timidity song.mid -Ow -o song.wav
+```

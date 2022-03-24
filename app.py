@@ -14,7 +14,6 @@ class App:
         self.root.parent = self
         self.tracks = None
         self.root.filename = None
-        pygame.init()
 
         self.sidebar = PianoNoteSidebar(self.root)
         self.canvas = PianoRoll(self.root, self.sidebar)
@@ -24,11 +23,19 @@ class App:
 
         self.root.update()
 
+        self.init_mixer()
         self.init_window()
         self.init_menu()
 
         self.root.bind('<Configure>', self.updateSize)
         self.root.configure(bg=COLOR_PALETTE['black_coral'])
+
+
+    def init_mixer(self):
+        pygame.init()
+        pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
+        pygame.mixer.init()
+
 
     def init_window(self):
         self.screenWidth = self.root.winfo_screenwidth()
@@ -71,6 +78,8 @@ class App:
             title='Select A File',
             filetypes=(('midi', '*.mid'),('all files', '*.*'))
         )
+        pygame.mixer.music.stop()
+        self.musicPlayer.is_playing = None
         self.tracks = self.import_song(self.root.filename)
 
         # Create a new canvas
@@ -99,11 +108,6 @@ class App:
         tempo = 461538
         ticks_per_beat = 96
         # print(f'{l} ticks -> {tick2second(l, ticks_per_beat, tempo)} sec')
-
-        pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer to avoid sound lag
-        pygame.mixer.init()
-        pygame.mixer.music.load('resources\songs\song.wav')
-        pygame.mixer.music.play(loops=0)
 
 
     def import_song(self, songname):

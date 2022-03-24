@@ -16,6 +16,7 @@ from constants import (
     TRACKS_SIDEBAR_WIDTH_PERCENT,
     TRACKS_SIDEBAR_HEIGHT_PERCENT
 )
+import pygame
 
 class PianoNoteSidebar(Canvas):
     def __init__(self, parent):
@@ -116,6 +117,7 @@ class MusicPlayer(Frame):
         parent.update()
         self.width = ROOT_INITIAL_WIDTH * MUSIC_PLAYER_WIDTH_PERCENT / 100
         self.height = ROOT_INITIAL_HEIGHT * MUSIC_PLAYER_HEIGHT_PERCENT / 100
+        self.parent = parent
 
         super(MusicPlayer, self).__init__(
             parent,
@@ -129,7 +131,9 @@ class MusicPlayer(Frame):
         self.backward_button.place(relx=0.45, rely=0.5, anchor=CENTER)
 
         self.play_image = PhotoImage(file='resources/images/play.png').subsample(5)
-        self.play_button = Button(self, image=self.play_image, borderwidth=0, highlightthickness=0)
+        self.pause_image = PhotoImage(file='resources/images/pause.png').subsample(5)
+        self.is_playing = None
+        self.play_button = Button(self, image=self.play_image, borderwidth=0, highlightthickness=0, command=self.play_song)
         self.play_button.place(relx=0.5, rely=0.5, anchor=CENTER)
 
         self.forward_image = PhotoImage(file='resources/images/forward.png').subsample(5)
@@ -137,10 +141,41 @@ class MusicPlayer(Frame):
         self.forward_button.place(relx=0.55, rely=0.5, anchor=CENTER)
 
         self.stop_image = PhotoImage(file='resources/images/stop.png').subsample(5)
-        self.stop_button = Button(self, image=self.stop_image, borderwidth=0, highlightthickness=0)
+        self.stop_button = Button(self, image=self.stop_image, borderwidth=0, highlightthickness=0, command=self.stop_song)
         self.stop_button.place(relx=0.975, rely=0.5, anchor=CENTER)
 
         self.grid(row=0, column=1, columnspan=3, sticky='w')
+
+
+    def play_song(self):
+        app = self.parent.parent
+        if self.parent.parent.root.filename:
+            if self.is_playing == None:
+                self.is_playing = True
+                self.play_button.configure(image=self.pause_image)
+                song_name = app.root.filename.split('.')[0] + '.wav'
+
+                pygame.mixer.music.load(song_name)
+                pygame.mixer.music.play()
+                app.canvas.play_song()
+            else:
+                self.is_playing = not self.is_playing
+
+                if self.is_playing:
+                    self.play_button.configure(image=self.pause_image)
+                    pygame.mixer.music.unpause()
+                    app.canvas.play_song()
+                else:
+                    self.play_button.configure(image=self.play_image)
+                    pygame.mixer.music.pause()
+
+
+    def stop_song(self):
+        app = self.parent.parent
+        self.is_playing = None
+        pygame.mixer.music.stop()
+        app.canvas.stop_song()
+
 
     def updateSize(self, event, parent):
         parent.update()

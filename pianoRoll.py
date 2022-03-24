@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Canvas
+from turtle import width
 from constants import (
     PIANO_ROLL_HEIGHT_PERCENT,
     PIANO_ROLL_WIDTH_PERCENT,
@@ -16,6 +17,7 @@ from constants import (
 class PianoRoll(Canvas):
     def __init__(self, parent, sidebar, tracks=None):
         parent.update()
+        self.parent = parent
         self.sidebar = sidebar
         self.tracks = tracks
         self.width = PIANO_ROLL_WIDTH_PERCENT / 100 * parent.winfo_width()
@@ -52,7 +54,18 @@ class PianoRoll(Canvas):
                         activefill='lightgray',
                         tags=f'track_{i}',
                     )
-        self.timestamp = self.create_rectangle(0, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red')
+        self.timestamp = self.create_rectangle(0, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red', tags='timestamp')
+
+
+    def play_song(self):
+        if self.parent.parent.musicPlayer.is_playing:
+            self.move(self.timestamp, 1, 0)
+            self.parent.after(20, self.play_song)
+
+
+    def stop_song(self):
+        x1, y1, x2, y2 = self.coords(self.timestamp)
+        self.coords(self.timestamp, 0, 0, x2-x1, y2-y1)
 
 
     def configure_scrollbars(self, parent):
@@ -117,9 +130,6 @@ class PianoRoll(Canvas):
         if self.zoomLevel * factor > MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
             self.zoomLevel *= factor
             self.scale('all', x, y, factor, 1)
-
-            # Scale back the red timestamp line
-            self.scale(self.timestamp, x, y, 1/factor, 1)
 
             x1, _, x2, _ = self.bbox('all')
             _, _, _, y2 = self.sidebar.bbox('all')
