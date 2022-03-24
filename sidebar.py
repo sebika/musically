@@ -127,27 +127,36 @@ class MusicPlayer(Frame):
         )
 
         self.backward_image = PhotoImage(file='resources/images/backward.png').subsample(5)
-        self.backward_button = Button(self, image=self.backward_image, borderwidth=0, highlightthickness=0)
+        self.backward_button = Button(
+            self, image=self.backward_image, borderwidth=0, highlightthickness=0
+        )
         self.backward_button.place(relx=0.45, rely=0.5, anchor=CENTER)
 
         self.play_image = PhotoImage(file='resources/images/play.png').subsample(5)
         self.pause_image = PhotoImage(file='resources/images/pause.png').subsample(5)
         self.is_playing = None
-        self.play_button = Button(self, image=self.play_image, borderwidth=0, highlightthickness=0, command=self.play_song)
+        self.play_button = Button(
+            self, image=self.play_image, borderwidth=0, highlightthickness=0,
+            command=lambda: self.play_song(None)
+        )
         self.play_button.place(relx=0.5, rely=0.5, anchor=CENTER)
 
         self.forward_image = PhotoImage(file='resources/images/forward.png').subsample(5)
-        self.forward_button = Button(self, image=self.forward_image, borderwidth=0, highlightthickness=0)
+        self.forward_button = Button(
+            self, image=self.forward_image, borderwidth=0, highlightthickness=0
+        )
         self.forward_button.place(relx=0.55, rely=0.5, anchor=CENTER)
 
         self.stop_image = PhotoImage(file='resources/images/stop.png').subsample(5)
-        self.stop_button = Button(self, image=self.stop_image, borderwidth=0, highlightthickness=0, command=self.stop_song)
+        self.stop_button = Button(
+            self, image=self.stop_image, borderwidth=0, highlightthickness=0, command=self.stop_song
+        )
         self.stop_button.place(relx=0.975, rely=0.5, anchor=CENTER)
 
         self.grid(row=0, column=1, columnspan=3, sticky='w')
 
 
-    def play_song(self):
+    def play_song(self, event):
         app = self.parent.parent
         if self.parent.parent.root.filename:
             if self.is_playing == None:
@@ -173,6 +182,7 @@ class MusicPlayer(Frame):
     def stop_song(self):
         app = self.parent.parent
         self.is_playing = None
+        self.play_button.configure(image=self.play_image)
         pygame.mixer.music.stop()
         app.canvas.stop_song()
 

@@ -24,6 +24,7 @@ class PianoRoll(Canvas):
         self.height = PIANO_ROLL_HEIGHT_PERCENT / 100 * parent.winfo_height()
         self.gridX = CANVAS_GRID_X
         self.gridY = CANVAS_GRID_Y
+        self.timestamp_x = 0
         self.zoomLevel = 1
 
         super(PianoRoll, self).__init__(
@@ -54,17 +55,22 @@ class PianoRoll(Canvas):
                         activefill='lightgray',
                         tags=f'track_{i}',
                     )
-        self.timestamp = self.create_rectangle(0, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red', tags='timestamp')
+        self.timestamp = self.create_rectangle(
+            self.timestamp_x, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red', tags='timestamp'
+        )
 
 
     def play_song(self):
-        if self.parent.parent.musicPlayer.is_playing:
-            self.move(self.timestamp, 1, 0)
-            self.parent.after(20, self.play_song)
+        app = self.parent.parent
+        if self.parent.parent.musicPlayer.is_playing and self.timestamp_x <= app.length_in_ticks*self.zoomLevel:
+            self.timestamp_x += app.timestamp_speed
+            self.move(self.timestamp, app.timestamp_speed, 0)
+            self.parent.after(int(1000 / app.fps), self.play_song)
 
 
     def stop_song(self):
         x1, y1, x2, y2 = self.coords(self.timestamp)
+        self.timestamp_x = 0
         self.coords(self.timestamp, 0, 0, x2-x1, y2-y1)
 
 
@@ -123,6 +129,7 @@ class PianoRoll(Canvas):
 
 
     def _do_zoom(self, event):
+        app = self.parent.parent
         x = 0
         y = self.canvasy(event.y)
         factor = 1.001 ** event.delta
@@ -134,6 +141,8 @@ class PianoRoll(Canvas):
             x1, _, x2, _ = self.bbox('all')
             _, _, _, y2 = self.sidebar.bbox('all')
             self.configure(scrollregion=[x1, 0, x2, y2])
+            app.timestamp_speed *= factor
+            self.timestamp_x *= factor
 
 
     def _on_mousewheel(self, event):

@@ -3,7 +3,7 @@ from common import Track
 from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH, COLOR_PALETTE, TRACKS_PATELLTE
 from pianoRoll import PianoRoll
 from sidebar import PianoNoteSidebar, MusicPlayer, TrackSidebar
-from mido import MidiFile, Message, tick2second
+from mido import MidiFile, Message, tick2second, MetaMessage
 from tkinter import filedialog
 import pygame
 
@@ -28,6 +28,7 @@ class App:
         self.init_menu()
 
         self.root.bind('<Configure>', self.updateSize)
+        self.root.bind('<space>', self.musicPlayer.play_song)
         self.root.configure(bg=COLOR_PALETTE['black_coral'])
 
 
@@ -104,16 +105,18 @@ class App:
         for btn in self.trackSidebar.buttons:
             btn.update_color()
 
-        l = self.tracks[0].notes[-1][2]
-        tempo = 461538
-        ticks_per_beat = 96
-        # print(f'{l} ticks -> {tick2second(l, ticks_per_beat, tempo)} sec')
+        # Compute speed to the timestamp
+        self.length_in_seconds = tick2second(self.length_in_ticks, self.ticks_per_beat, self.tempo)
+        self.fps = 100
+        self.timestamp_speed = self.length_in_ticks / self.length_in_seconds / self.fps
 
 
     def import_song(self, songname):
         mid = MidiFile(songname)
-        tracks = []
+        self.ticks_per_beat = mid.ticks_per_beat
+        self.length_in_ticks = 0
 
+        tracks = []
         i = 0
         for track in mid.tracks:
             # Each note, for example C4 should have (start, end) pair
@@ -144,6 +147,14 @@ class App:
                         end = current_track_dict[pitch][1]
                         current_track_dict.pop(pitch, 'None')
                         instrument_track.append((pitch, start , end))
+                elif isinstance(msg, MetaMessage) and msg.type == 'set_tempo':
+                    if msg.tempo != 0:
+                        self.tempo = msg.tempo
+                else:
+                    ticks += msg.time
+
+                self.length_in_ticks = max(self.length_in_ticks, ticks)
+
 
             # Save only the tracks that have notes
             if len(instrument_track) != 0:
