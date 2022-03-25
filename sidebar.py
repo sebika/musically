@@ -149,7 +149,8 @@ class MusicPlayer(Frame):
 
         self.stop_image = PhotoImage(file='resources/images/stop.png').subsample(5)
         self.stop_button = Button(
-            self, image=self.stop_image, borderwidth=0, highlightthickness=0, command=self.stop_song
+            self, image=self.stop_image, borderwidth=0, highlightthickness=0,
+            command=lambda: self.stop_song(None)
         )
         self.stop_button.place(relx=0.975, rely=0.5, anchor=CENTER)
 
@@ -179,11 +180,13 @@ class MusicPlayer(Frame):
                     pygame.mixer.music.pause()
 
 
-    def stop_song(self):
+    def stop_song(self, event):
         app = self.parent.parent
         self.is_playing = None
         self.play_button.configure(image=self.play_image)
         pygame.mixer.music.stop()
+        app.seconds_elapsed = 0
+        app.init_current_playing_notes()
         app.canvas.stop_song()
 
 

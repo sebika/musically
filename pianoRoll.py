@@ -62,9 +62,31 @@ class PianoRoll(Canvas):
 
     def play_song(self):
         app = self.parent.parent
-        if self.parent.parent.musicPlayer.is_playing and self.timestamp_x <= app.length_in_ticks*self.zoomLevel:
+        if self.parent.parent.musicPlayer.is_playing and app.seconds_elapsed < app.length_in_seconds:
+            for i, note_index in enumerate(app.note_index_to_play):
+                # Add new notes that are being played
+                while note_index < len(app.tracks[i].notes):
+                    note, start, end = app.tracks[i].notes[note_index]
+                    start *= app.tick_to_track
+                    end *= app.tick_to_track
+                    if start <= app.seconds_elapsed and app.seconds_elapsed < end:
+                        app.current_notes[i].append([note, start, end])
+                        note_index += 1
+                        print(f'Track {i} -> {note} {start} {end} | {app.seconds_elapsed}')
+                    else:
+                        break
+                app.note_index_to_play[i] = note_index
+
+                # Remove notes that finished playing
+                for elem in app.current_notes[i]:
+                    note, start, end = elem
+                    if end <= app.seconds_elapsed:
+                        app.current_notes[i].remove(elem)
+
+
             self.timestamp_x += app.timestamp_speed
             self.move(self.timestamp, app.timestamp_speed, 0)
+            app.seconds_elapsed += 1 / app.fps
             self.parent.after(int(1000 / app.fps), self.play_song)
 
 

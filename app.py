@@ -14,6 +14,8 @@ class App:
         self.root.parent = self
         self.tracks = None
         self.root.filename = None
+        self.length_in_seconds = None
+        self.seconds_elapsed = None
 
         self.sidebar = PianoNoteSidebar(self.root)
         self.canvas = PianoRoll(self.root, self.sidebar)
@@ -29,6 +31,7 @@ class App:
 
         self.root.bind('<Configure>', self.updateSize)
         self.root.bind('<space>', self.musicPlayer.play_song)
+        self.root.bind('r', self.musicPlayer.stop_song)
         self.root.configure(bg=COLOR_PALETTE['black_coral'])
 
 
@@ -109,6 +112,17 @@ class App:
         self.length_in_seconds = tick2second(self.length_in_ticks, self.ticks_per_beat, self.tempo)
         self.fps = 100
         self.timestamp_speed = self.length_in_ticks / self.length_in_seconds / self.fps
+        self.seconds_elapsed = 0
+        self.tick_to_track = self.length_in_seconds / self.length_in_ticks
+        self.init_current_playing_notes()
+
+
+    def init_current_playing_notes(self):
+        self.current_notes = []
+        self.note_index_to_play = []
+        for i in range(len(self.tracks)):
+            self.current_notes.append([])
+            self.note_index_to_play.append(0)
 
 
     def import_song(self, songname):
