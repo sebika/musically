@@ -26,6 +26,7 @@ class PianoRoll(Canvas):
         self.gridY = CANVAS_GRID_Y
         self.timestamp_x = 0
         self.zoomLevel = 1
+        self.note_id = []
 
         super(PianoRoll, self).__init__(
             parent,
@@ -43,18 +44,20 @@ class PianoRoll(Canvas):
     def draw(self, tracks=None):
         if tracks:
             for i, track in enumerate(tracks):
+                self.note_id.append([])
                 for note in track.notes:
                     note_y = self.get_note_height(note[0])
                     note_start = note[1]
                     note_end = note[2]
 
-                    self.create_rectangle(
-                        note_start, note_y,
-                        note_end, note_y + NOTE_THICKNESS,
-                        fill=track.color,
-                        activefill='lightgray',
-                        tags=f'track_{i}',
-                    )
+                    self.note_id[-1].append(
+                        self.create_rectangle(
+                            note_start, note_y,
+                            note_end, note_y + NOTE_THICKNESS,
+                            fill=track.color,
+                            activefill='lightgray',
+                            tags=f'track_{i}',
+                    ))
         self.timestamp = self.create_rectangle(
             self.timestamp_x, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red', tags='timestamp'
         )
@@ -70,10 +73,11 @@ class PianoRoll(Canvas):
                     start *= app.tick_to_track
                     end *= app.tick_to_track
                     if start <= app.seconds_elapsed and app.seconds_elapsed < end:
-                        app.current_notes[i].append([note, start, end])
+                        app.current_notes[i].append([note, start, end, note_index])
                         sidebar_note = self.sidebar.notes[note]
                         self.sidebar.itemconfig(sidebar_note.id, fill=sidebar_note.activefill)
                         self.sidebar.activeNotes[note] += 1
+                        self.itemconfig(self.note_id[i][note_index], fill='lightgray')
                         note_index += 1
                     else:
                         break
@@ -81,12 +85,13 @@ class PianoRoll(Canvas):
 
                 # Remove notes that finished playing
                 for elem in app.current_notes[i]:
-                    note, start, end = elem
+                    note, start, end, note_index = elem
                     if end < app.seconds_elapsed:
                         self.sidebar.activeNotes[note] -= 1
                         if self.sidebar.activeNotes[note] == 0:
                             sidebar_note = self.sidebar.notes[note]
                             self.sidebar.itemconfig(sidebar_note.id, fill=sidebar_note.color)
+                        self.itemconfig(self.note_id[i][note_index], fill=app.tracks[i].color)
 
                         app.current_notes[i].remove(elem)
 

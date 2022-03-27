@@ -75,6 +75,12 @@ class App:
             self.sidebar.activeNotes[i] = 0
 
 
+    def init_canvas_notes(self):
+        for track_id in range(len(self.canvas.note_id)):
+            for note in self.canvas.note_id[track_id]:
+                self.canvas.itemconfig(note, fill=self.tracks[track_id].color)
+
+
     def updateSize(self, event):
         self.canvas.updateSize(event, self.root)
         self.sidebar.updateSize(event, self.root)

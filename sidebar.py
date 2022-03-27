@@ -189,6 +189,7 @@ class MusicPlayer(Frame):
         app.seconds_elapsed = 0
         app.init_current_playing_notes()
         app.init_sidebar_notes()
+        app.init_canvas_notes()
         app.canvas.stop_song()
 
 
