@@ -71,8 +71,11 @@ class PianoRoll(Canvas):
                     end *= app.tick_to_track
                     if start <= app.seconds_elapsed and app.seconds_elapsed < end:
                         app.current_notes[i].append([note, start, end])
+                        sidebar_note = self.sidebar.notes[note]
+                        self.sidebar.itemconfig(sidebar_note.id, fill=sidebar_note.activefill)
+                        self.sidebar.activeNotes[note] += 1
+                        # print(f'Track {i}, note: {note_index} -> {note} {start} {end} | {app.seconds_elapsed}')
                         note_index += 1
-                        print(f'Track {i} -> {note} {start} {end} | {app.seconds_elapsed}')
                     else:
                         break
                 app.note_index_to_play[i] = note_index
@@ -80,8 +83,14 @@ class PianoRoll(Canvas):
                 # Remove notes that finished playing
                 for elem in app.current_notes[i]:
                     note, start, end = elem
-                    if end <= app.seconds_elapsed:
+                    if end < app.seconds_elapsed:
+                        self.sidebar.activeNotes[note] -= 1
+                        if self.sidebar.activeNotes[note] == 0:
+                            sidebar_note = self.sidebar.notes[note]
+                            self.sidebar.itemconfig(sidebar_note.id, fill=sidebar_note.color)
+
                         app.current_notes[i].remove(elem)
+                        # print(f'Track {i}: {len(app.current_notes[i])}')
 
 
             self.timestamp_x += app.timestamp_speed

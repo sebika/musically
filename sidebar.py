@@ -26,6 +26,7 @@ class PianoNoteSidebar(Canvas):
         self.gridX = CANVAS_GRID_X - 1
         self.gridY = CANVAS_GRID_Y - 1
         self.notes = []
+        self.activeNotes = []
 
         super(PianoNoteSidebar, self).__init__(
             parent,
@@ -61,6 +62,7 @@ class PianoNoteSidebar(Canvas):
             C_sharp = SidebarNote(0, offset + h*10, self.width*0.75, offset + h*11, COLOR_PALETTE['space_cadet'], f'C#{i}', self)
 
             self.notes += [B, A_sharp, A, G_sharp, G, F_sharp, F, E, D_sharp, D, C_sharp, C]
+            self.activeNotes += [0] * 12
 
             offset += 12*h
 
@@ -106,10 +108,9 @@ class SidebarNote():
         if addNoteText:
             self.textId = canvas.create_text(0, 0, text=self.pitch)
 
-        if pitch.find('#') != -1:
-            canvas.itemconfig(self.id, activefill='black')
-        else:
-            canvas.itemconfig(self.id, activefill=COLOR_PALETTE['blue_gray'])
+
+        self.activefill = COLOR_PALETTE['blue_gray']
+        canvas.itemconfig(self.id, activefill=self.activefill)
 
 
 class MusicPlayer(Frame):
@@ -187,6 +188,7 @@ class MusicPlayer(Frame):
         pygame.mixer.music.stop()
         app.seconds_elapsed = 0
         app.init_current_playing_notes()
+        app.init_sidebar_notes()
         app.canvas.stop_song()
 
 

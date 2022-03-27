@@ -69,6 +69,12 @@ class App:
         self.root.config(menu=self.menu)
 
 
+    def init_sidebar_notes(self):
+        for i, note in enumerate(self.sidebar.notes):
+            self.sidebar.itemconfig(note.id, fill=note.color)
+            self.sidebar.activeNotes[i] = 0
+
+
     def updateSize(self, event):
         self.canvas.updateSize(event, self.root)
         self.sidebar.updateSize(event, self.root)
@@ -82,6 +88,7 @@ class App:
             title='Select A File',
             filetypes=(('midi', '*.mid'),('all files', '*.*'))
         )
+        self.init_sidebar_notes()
         pygame.mixer.music.stop()
         self.musicPlayer.is_playing = None
         self.tracks = self.import_song(self.root.filename)
