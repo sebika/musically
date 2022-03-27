@@ -74,7 +74,6 @@ class PianoRoll(Canvas):
                         sidebar_note = self.sidebar.notes[note]
                         self.sidebar.itemconfig(sidebar_note.id, fill=sidebar_note.activefill)
                         self.sidebar.activeNotes[note] += 1
-                        # print(f'Track {i}, note: {note_index} -> {note} {start} {end} | {app.seconds_elapsed}')
                         note_index += 1
                     else:
                         break
@@ -90,8 +89,6 @@ class PianoRoll(Canvas):
                             self.sidebar.itemconfig(sidebar_note.id, fill=sidebar_note.color)
 
                         app.current_notes[i].remove(elem)
-                        # print(f'Track {i}: {len(app.current_notes[i])}')
-
 
             self.timestamp_x += app.timestamp_speed
             self.move(self.timestamp, app.timestamp_speed, 0)
@@ -161,19 +158,22 @@ class PianoRoll(Canvas):
 
     def _do_zoom(self, event):
         app = self.parent.parent
-        x = 0
-        y = self.canvasy(event.y)
-        factor = 1.001 ** event.delta
 
-        if self.zoomLevel * factor > MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
-            self.zoomLevel *= factor
-            self.scale('all', x, y, factor, 1)
+        # Zoom only if a song is already selected
+        if app.root.filename:
+            x = 0
+            y = self.canvasy(event.y)
+            factor = 1.001 ** event.delta
 
-            x1, _, x2, _ = self.bbox('all')
-            _, _, _, y2 = self.sidebar.bbox('all')
-            self.configure(scrollregion=[x1, 0, x2, y2])
-            app.timestamp_speed *= factor
-            self.timestamp_x *= factor
+            if self.zoomLevel * factor > MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
+                self.zoomLevel *= factor
+                self.scale('all', x, y, factor, 1)
+
+                x1, _, x2, _ = self.bbox('all')
+                _, _, _, y2 = self.sidebar.bbox('all')
+                self.configure(scrollregion=[x1, 0, x2, y2])
+                app.timestamp_speed *= factor
+                self.timestamp_x *= factor
 
 
     def _on_mousewheel(self, event):

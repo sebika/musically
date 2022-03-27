@@ -88,6 +88,9 @@ class App:
             title='Select A File',
             filetypes=(('midi', '*.mid'),('all files', '*.*'))
         )
+        if not self.root.filename:
+            return
+
         self.init_sidebar_notes()
         pygame.mixer.music.stop()
         self.musicPlayer.is_playing = None
