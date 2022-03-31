@@ -10,6 +10,7 @@ from constants import (
     COLOR_PALETTE,
     MIN_ZOOM,
     MAX_ZOOM,
+    SOLFEGE,
     TRACKS_PATELLTE
 )
 
@@ -58,9 +59,26 @@ class PianoRoll(Canvas):
                             activefill='lightgray',
                             tags=f'track_{i}',
                     ))
+
         self.timestamp = self.create_rectangle(
             self.timestamp_x, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red', tags='timestamp'
         )
+
+    def init_tooltips(self, notation=None):
+        app = self.parent.parent
+        for i, track in enumerate(app.tracks):
+            for j in range(len(track.notes)):
+                note_start = track.notes[j][1]
+                note_end = track.notes[j][2]
+                length = (note_end - note_start) * app.tick_to_track
+                pitch = self.numeric_to_string_note(track.notes[j][0])
+                if notation == 'classic':
+                    pitch = SOLFEGE[list(pitch)[0]]
+                    if self.numeric_to_string_note(track.notes[j][0]).find('#') > 0:
+                        pitch += '#'
+
+                message = f'{pitch} plays {length:.2f} s'
+                app.tooltip.tagbind(self, self.note_id[i][j],  message)
 
 
     def play_song(self):

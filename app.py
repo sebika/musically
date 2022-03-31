@@ -11,6 +11,7 @@ from sidebar import PianoNoteSidebar, MusicPlayer, TrackSidebar
 from mido import MidiFile, Message, tick2second, MetaMessage
 from tkinter import filedialog
 import pygame
+import Pmw
 
 
 class App:
@@ -21,6 +22,7 @@ class App:
         self.root.filename = None
         self.length_in_seconds = None
         self.seconds_elapsed = None
+        self.tooltip = Pmw.Balloon()
 
         self.sidebar = PianoNoteSidebar(self.root)
         self.canvas = PianoRoll(self.root, self.sidebar)
@@ -109,12 +111,14 @@ class App:
 
 
     def change_solfege_notes(self, notation=None):
-        print(notation)
         for note in self.sidebar.notes:
             if note.textId:
                 new_text = note.pitch
+                self.canvas.init_tooltips()
                 if notation == 'classic':
                     new_text = note.classic_pitch
+                    self.canvas.init_tooltips('classic')
+
                 self.sidebar.itemconfigure(note.textId, text=new_text)
 
 
@@ -161,6 +165,7 @@ class App:
         self.seconds_elapsed = 0
         self.tick_to_track = self.length_in_seconds / self.length_in_ticks
         self.init_current_playing_notes()
+        self.canvas.init_tooltips()
 
 
     def init_current_playing_notes(self):
