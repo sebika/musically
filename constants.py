@@ -21,6 +21,7 @@ TRACKS_SIDEBAR_HEIGHT_PERCENT = SIDEBAR_PIANO_HEIGHT_PERCENT
 
 MAX_NUMBER_OF_TRACKS = 8
 
+PLAYING_FILE_EXTENSION = '.wav'
 
 COLOR_PALETTE = {
     'honeydew': '#F1FFE7',
@@ -43,4 +44,14 @@ TRACKS_PATELLTE = {
     'brown': '#8C564B',
     'cyan': '#17BDCE',
     'gray': '#7F7F7F',
+}
+
+SOLFEGE = {
+    'C': 'DO',
+    'D': 'RE',
+    'E': 'MI',
+    'F': 'FA',
+    'G': 'SOL',
+    'A': 'LA',
+    'B': 'SI'
 }

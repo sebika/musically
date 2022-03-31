@@ -1,6 +1,11 @@
 import tkinter as tk
 from common import Track
-from constants import ROOT_INITIAL_HEIGHT, ROOT_INITIAL_WIDTH, COLOR_PALETTE, TRACKS_PATELLTE
+from constants import (
+    ROOT_INITIAL_HEIGHT,
+    ROOT_INITIAL_WIDTH,
+    COLOR_PALETTE,
+    TRACKS_PATELLTE
+)
 from pianoRoll import PianoRoll
 from sidebar import PianoNoteSidebar, MusicPlayer, TrackSidebar
 from mido import MidiFile, Message, tick2second, MetaMessage
@@ -63,7 +68,22 @@ class App:
         fileMenu.add_command(label='Exit', command=self.root.destroy)
         self.menu.add_cascade(label='File', menu=fileMenu)
 
-        self.menu.add_cascade(label='View')
+        preferencesMenu = tk.Menu(self.menu, tearoff=0)
+
+        solfege_submenu = tk.Menu(preferencesMenu, tearoff=0)
+        solfege_submenu.add_radiobutton(label='Do/Re/Mi', command=lambda: self.change_solfege_notes('classic'))
+        solfege_submenu.add_radiobutton(label='A0/B0/C0', command=lambda: self.change_solfege_notes('new'))
+        preferencesMenu.add_cascade(label='Solfege', menu=solfege_submenu)
+
+        notes_submenu = tk.Menu(preferencesMenu, tearoff=0)
+        notes_submenu.add_checkbutton(label='Connected notes')
+        notes_submenu.add_command(label='Color')
+        notes_submenu.add_command(label='Shape')
+        notes_submenu.add_command(label='Opacity')
+        preferencesMenu.add_cascade(label='Notes', menu=notes_submenu)
+
+        self.menu.add_cascade(label='Preferences', menu=preferencesMenu)
+
         self.menu.add_cascade(label='Help')
 
         self.root.config(menu=self.menu)
@@ -86,6 +106,16 @@ class App:
         self.sidebar.updateSize(event, self.root)
         self.musicPlayer.updateSize(event, self.root)
         self.trackSidebar.updateSize(event, self.root)
+
+
+    def change_solfege_notes(self, notation=None):
+        print(notation)
+        for note in self.sidebar.notes:
+            if note.textId:
+                new_text = note.pitch
+                if notation == 'classic':
+                    new_text = note.classic_pitch
+                self.sidebar.itemconfigure(note.textId, text=new_text)
 
 
     def _open_file(self):

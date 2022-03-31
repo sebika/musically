@@ -5,6 +5,7 @@ from constants import (
     CANVAS_GRID_Y,
     MAX_NUMBER_OF_TRACKS,
     NOTE_THICKNESS,
+    PLAYING_FILE_EXTENSION,
     ROOT_INITIAL_HEIGHT,
     SIDEBAR_PIANO_HEIGHT_PERCENT,
     SIDEBAR_PIANO_WIDTH_PERCENT,
@@ -13,6 +14,7 @@ from constants import (
     SIDEBAR_PIANO_WIDTH_PERCENT,
     MUSIC_PLAYER_WIDTH_PERCENT,
     MUSIC_PLAYER_HEIGHT_PERCENT,
+    SOLFEGE,
     TRACKS_SIDEBAR_WIDTH_PERCENT,
     TRACKS_SIDEBAR_HEIGHT_PERCENT
 )
@@ -102,6 +104,7 @@ class SidebarNote():
         self.height = height
         self.color = color
         self.pitch = pitch
+        self.classic_pitch = SOLFEGE[list(self.pitch)[0]]
         self.id = canvas.create_rectangle(x, y, width, height, fill=color)
         self.textId = None
 
@@ -127,12 +130,6 @@ class MusicPlayer(Frame):
             background=COLOR_PALETTE['black_coral'],
         )
 
-        self.backward_image = PhotoImage(file='resources/images/backward.png').subsample(5)
-        self.backward_button = Button(
-            self, image=self.backward_image, borderwidth=0, highlightthickness=0
-        )
-        self.backward_button.place(relx=0.45, rely=0.5, anchor=CENTER)
-
         self.play_image = PhotoImage(file='resources/images/play.png').subsample(5)
         self.pause_image = PhotoImage(file='resources/images/pause.png').subsample(5)
         self.is_playing = None
@@ -140,20 +137,15 @@ class MusicPlayer(Frame):
             self, image=self.play_image, borderwidth=0, highlightthickness=0,
             command=lambda: self.play_song(None)
         )
-        self.play_button.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.play_button.place(relx=0.1, rely=0.5, anchor=CENTER)
 
-        self.forward_image = PhotoImage(file='resources/images/forward.png').subsample(5)
-        self.forward_button = Button(
-            self, image=self.forward_image, borderwidth=0, highlightthickness=0
-        )
-        self.forward_button.place(relx=0.55, rely=0.5, anchor=CENTER)
 
         self.stop_image = PhotoImage(file='resources/images/stop.png').subsample(5)
         self.stop_button = Button(
             self, image=self.stop_image, borderwidth=0, highlightthickness=0,
             command=lambda: self.stop_song(None)
         )
-        self.stop_button.place(relx=0.975, rely=0.5, anchor=CENTER)
+        self.stop_button.place(relx=0.150, rely=0.5, anchor=CENTER)
 
         self.grid(row=0, column=1, columnspan=3, sticky='w')
 
@@ -164,7 +156,7 @@ class MusicPlayer(Frame):
             if self.is_playing == None:
                 self.is_playing = True
                 self.play_button.configure(image=self.pause_image)
-                song_name = app.root.filename.split('.')[0] + '.wav'
+                song_name = app.root.filename.split('.')[0] + PLAYING_FILE_EXTENSION
 
                 pygame.mixer.music.load(song_name)
                 pygame.mixer.music.play()
