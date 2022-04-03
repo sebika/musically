@@ -112,7 +112,6 @@ class PianoRoll(Canvas):
                             sidebar_note = self.sidebar.notes[note]
                             self.sidebar.itemconfig(sidebar_note.id, fill=sidebar_note.color)
                         self.itemconfig(self.note_id[i][note_index], fill=app.tracks[i].color)
-
                         app.current_notes[i].remove(elem)
 
             stop_time = time.time()
@@ -134,22 +133,22 @@ class PianoRoll(Canvas):
         self.bind('<Control-MouseWheel>', self._do_zoom)
         self.bind('<MouseWheel>', self._on_mousewheel)
 
-        # self.bind('<ButtonPress-1>', lambda event: (
-        #     self.scan_mark(event.x, event.y),
-        #     self.sidebar.scan_mark(event.x, event.y),
-        # ))
-        # self.bind('<B1-Motion>', lambda event: (
-        #     self.scan_dragto(event.x, event.y, gain=1),
-        #     self.sidebar.scan_dragto(event.x, event.y, gain=1),
-        # ))
+        self.bind('<ButtonPress-1>', lambda event: (
+            self.scan_mark(event.x, event.y),
+            self.sidebar.scan_mark(event.x, event.y),
+        ))
+        self.bind('<B1-Motion>', lambda event: (
+            self.scan_dragto(event.x, event.y, gain=1),
+            self.sidebar.scan_dragto(event.x, event.y, gain=1),
+        ))
 
-        self.scroll_x = tk.Scrollbar(parent, orient='horizontal', command=self.xview)
-        self.scroll_x.grid(row=self.gridX-1, column=self.gridY, sticky='ew', columnspan=2)
+        # self.scroll_x = tk.Scrollbar(parent, orient='horizontal', command=self.xview)
+        # self.scroll_x.grid(row=self.gridX-1, column=self.gridY, sticky='ew', columnspan=2)
 
         self.scroll_y = tk.Scrollbar(parent, orient='vertical', command=self._vertical_scroll)
         self.scroll_y.grid(row=self.gridX, column=self.gridY+1, sticky='ns')
 
-        self.configure(yscrollcommand=self.scroll_y.set, xscrollcommand=self.scroll_x.set)
+        self.configure(yscrollcommand=self.scroll_y.set) #xscrollcommand=self.scroll_x.set)
 
         _, _, _, y2 = self.sidebar.bbox('all')
         self.sidebar.configure(scrollregion=self.sidebar.bbox('all'))

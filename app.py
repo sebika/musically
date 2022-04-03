@@ -1,6 +1,7 @@
 import tkinter as tk
 from common import Track
 from constants import (
+    FPS,
     ROOT_INITIAL_HEIGHT,
     ROOT_INITIAL_WIDTH,
     COLOR_PALETTE,
@@ -123,13 +124,15 @@ class App:
 
 
     def _open_file(self):
-        self.root.filename = filedialog.askopenfilename(
+        file = filedialog.askopenfilename(
             initialdir='./resources/songs',
             title='Select A File',
             filetypes=(('midi', '*.mid'),('all files', '*.*'))
         )
-        if not self.root.filename:
+        if not file:
             return
+
+        self.root.filename = file
 
         self.init_sidebar_notes()
         pygame.mixer.music.stop()
@@ -160,9 +163,9 @@ class App:
         for btn in self.trackSidebar.buttons:
             btn.update_color()
 
-        # Compute speed to the timestamp
+        # Compute speed of the timestamp
         self.length_in_seconds = tick2second(self.length_in_ticks, self.ticks_per_beat, self.tempo)
-        self.fps = 100
+        self.fps = FPS
         self.timestamp_speed = self.length_in_ticks / self.length_in_seconds / self.fps
         self.seconds_elapsed = 0
         self.tick_to_track = self.length_in_seconds / self.length_in_ticks
@@ -170,11 +173,10 @@ class App:
         self.canvas.init_tooltips()
 
 
-
     def init_current_playing_notes(self):
         self.current_notes = []
         self.note_index_to_play = []
-        for i in range(len(self.tracks)):
+        for _ in range(len(self.tracks)):
             self.current_notes.append([])
             self.note_index_to_play.append(0)
 
