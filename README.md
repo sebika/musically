@@ -18,3 +18,6 @@ Convert `midi` to `wav` in linux:
 03.04.2022:
    - time drift is a problem
    - apparently when you hold down click on a scrollbar it slows the animation
+   - playing a wav file instead of playing each individial note due to not being
+   constrained about an instrument which should be downloaded as a sound for each note,
+   but this solution occasionally leads to performance issues => time drift
