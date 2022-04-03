@@ -14,3 +14,7 @@ Convert `midi` to `wav` in linux:
 ```
    timidity song.mid -Ow -o song.wav
 ```
+
+03.04.2022:
+   - time drift is a problem
+   - apparently horizontal scrollbar fucks the timestamp

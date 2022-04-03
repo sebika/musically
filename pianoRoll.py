@@ -13,6 +13,7 @@ from constants import (
     SOLFEGE,
     TRACKS_PATELLTE
 )
+import time
 
 
 class PianoRoll(Canvas):
@@ -82,6 +83,7 @@ class PianoRoll(Canvas):
 
 
     def play_song(self):
+        start_time = time.time()
         app = self.parent.parent
         if self.parent.parent.musicPlayer.is_playing and app.seconds_elapsed < app.length_in_seconds:
             for i, note_index in enumerate(app.note_index_to_play):
@@ -113,10 +115,13 @@ class PianoRoll(Canvas):
 
                         app.current_notes[i].remove(elem)
 
-            self.timestamp_x += app.timestamp_speed
-            self.move(self.timestamp, app.timestamp_speed, 0)
-            app.seconds_elapsed += 1 / app.fps
-            self.parent.after(int(1000 / app.fps), self.play_song)
+            stop_time = time.time()
+            method_time = stop_time - start_time
+
+            self.parent.after(int(1000 / app.fps) - app.fps*int(method_time*1000), self.play_song)
+            self.timestamp_x += app.timestamp_speed * (1 + method_time*app.fps)
+            self.move(self.timestamp, app.timestamp_speed * (1 + method_time*app.fps), 0)
+            app.seconds_elapsed += 1 / app.fps + method_time
 
 
     def stop_song(self):
@@ -188,7 +193,7 @@ class PianoRoll(Canvas):
             y = self.canvasy(event.y)
             factor = 1.001 ** event.delta
 
-            if self.zoomLevel * factor > MIN_ZOOM or self.zoomLevel * factor > MAX_ZOOM:
+            if self.zoomLevel * factor > MIN_ZOOM and self.zoomLevel * factor < MAX_ZOOM:
                 self.zoomLevel *= factor
                 self.scale('all', x, y, factor, 1)
 

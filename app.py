@@ -135,6 +135,8 @@ class App:
         pygame.mixer.music.stop()
         self.musicPlayer.is_playing = None
         self.tracks = self.import_song(self.root.filename)
+        for track in self.tracks:
+            track.notes.sort(key=lambda y: y[1])
 
         # Create a new canvas
         self.canvas.grid_remove()
@@ -166,6 +168,7 @@ class App:
         self.tick_to_track = self.length_in_seconds / self.length_in_ticks
         self.init_current_playing_notes()
         self.canvas.init_tooltips()
+
 
 
     def init_current_playing_notes(self):
@@ -217,9 +220,7 @@ class App:
                         self.tempo = msg.tempo
                 else:
                     ticks += msg.time
-
-                self.length_in_ticks = max(self.length_in_ticks, ticks)
-
+                self.length_in_ticks = ticks
 
             # Save only the tracks that have notes
             if len(instrument_track) != 0:
