@@ -5,6 +5,7 @@ from constants import (
     ROOT_INITIAL_HEIGHT,
     ROOT_INITIAL_WIDTH,
     COLOR_PALETTE,
+    SCROLL_SPEED,
     TRACKS_PATELLTE
 )
 from pianoRoll import PianoRoll
@@ -40,6 +41,17 @@ class App:
         self.root.bind('<Configure>', self.updateSize)
         self.root.bind('<space>', self.musicPlayer.play_song)
         self.root.bind('r', self.musicPlayer.stop_song)
+        self.root.bind("<Left>",  lambda event: self.canvas.xview_scroll(-SCROLL_SPEED, "units"))
+        self.root.bind("<Right>", lambda event: self.canvas.xview_scroll(SCROLL_SPEED, "units"))
+        self.root.bind("<Up>",    lambda event: (
+            self.canvas.yview_scroll(-SCROLL_SPEED, "units"),
+            self.sidebar.yview_scroll(-SCROLL_SPEED, "units"),
+        ))
+        self.root.bind("<Down>",  lambda event: (
+            self.canvas.yview_scroll(SCROLL_SPEED, "units"),
+            self.sidebar.yview_scroll(SCROLL_SPEED, "units"),
+        ))
+
         self.root.configure(bg=COLOR_PALETTE['black_coral'])
 
 

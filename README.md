@@ -17,4 +17,4 @@ Convert `midi` to `wav` in linux:
 
 03.04.2022:
    - time drift is a problem
-   - apparently horizontal scrollbar fucks the timestamp
+   - apparently when you hold down click on a scrollbar it slows the animation
