@@ -41,26 +41,64 @@ class PianoRoll(Canvas):
 
 
     def draw(self, tracks=None):
-        if tracks:
-            for i, track in enumerate(tracks):
+        self.draw_notes('rectangle')
+
+        self.timestamp = self.create_rectangle(
+            self.timestamp_x, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red', tags='timestamp'
+        )
+
+
+    def draw_notes(self, shape):
+        app = self.parent.parent
+        shape_method = None
+        if shape == 'rectangle':
+            shape_method = self.create_rectangle
+        elif shape == 'oval':
+            shape_method = self.create_oval
+        elif shape == 'line':
+            shape_method = self.create_line
+
+        if self.zoomLevel != 1:
+            factor = 1 / self.zoomLevel
+            self.zoomLevel = 1
+            self.scale('all', 0, 0, factor, 1)
+
+            x1, _, x2, _ = self.bbox('all')
+            _, _, _, y2 = self.sidebar.bbox('all')
+            self.configure(scrollregion=[x1, 0, x2, y2])
+            app.timestamp_speed *= factor
+            self.timestamp_x *= factor
+
+        if app.tracks and shape_method:
+            self.note_id = []
+            for i, track in enumerate(app.tracks):
                 self.note_id.append([])
+                self.delete(f'track_{i}')
                 for note in track.notes:
                     note_y = self.get_note_height(note[0])
                     note_start = note[1]
                     note_end = note[2]
 
-                    self.note_id[-1].append(
-                        self.create_rectangle(
-                            note_start, note_y,
-                            note_end, note_y + NOTE_THICKNESS,
-                            fill=track.color,
-                            activefill='lightgray',
-                            tags=f'track_{i}',
-                    ))
+                    if shape == 'rectangle' or shape == 'oval':
+                        self.note_id[-1].append(
+                            shape_method(
+                                note_start, note_y,
+                                note_end, note_y + NOTE_THICKNESS,
+                                fill=track.color,
+                                activefill='lightgray',
+                                tags=f'track_{i}',
+                        ))
+                    elif shape == 'line':
+                        self.note_id[-1].append(
+                            shape_method(
+                                note_start, note_y + NOTE_THICKNESS/2,
+                                note_end, note_y + NOTE_THICKNESS/2,
+                                fill=track.color,
+                                activefill='lightgray',
+                                tags=f'track_{i}',
+                        ))
 
-        self.timestamp = self.create_rectangle(
-            self.timestamp_x, 0, 5, self.get_note_height(0)+NOTE_THICKNESS, fill='red', tags='timestamp'
-        )
+
 
     def init_tooltips(self, notation=None):
         app = self.parent.parent

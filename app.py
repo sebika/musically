@@ -93,7 +93,22 @@ class App:
         notes_submenu = tk.Menu(preferencesMenu, tearoff=0)
         notes_submenu.add_checkbutton(label='Connected notes')
         notes_submenu.add_command(label='Color')
-        notes_submenu.add_command(label='Shape')
+
+        shape_submenu = tk.Menu(notes_submenu, tearoff=0)
+        shape_submenu.add_command(label='Rectangle', command=lambda: (
+            self.canvas.draw_notes('rectangle'),
+            self.canvas.init_tooltips(),
+        ))
+        shape_submenu.add_command(label='Oval', command=lambda: (
+            self.canvas.draw_notes('oval'),
+            self.canvas.init_tooltips(),
+        ))
+        shape_submenu.add_command(label='Line', command=lambda: (
+            self.canvas.draw_notes('line'),
+            self.canvas.init_tooltips(),
+        ))
+        notes_submenu.add_cascade(label='Shape', menu=shape_submenu)
+
         notes_submenu.add_command(label='Opacity')
         preferencesMenu.add_cascade(label='Notes', menu=notes_submenu)
 
