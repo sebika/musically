@@ -26,6 +26,7 @@ class PianoRoll(Canvas):
         self.timestamp_x = 0
         self.zoomLevel = 1
         self.note_id = []
+        self.connected_line_id = []
 
         super(PianoRoll, self).__init__(
             parent,
@@ -36,11 +37,11 @@ class PianoRoll(Canvas):
             highlightbackground='black'
         )
 
-        self.draw(self.tracks)
+        self.draw()
         self.grid(row=self.gridX, column=self.gridY)
 
 
-    def draw(self, tracks=None):
+    def draw(self):
         self.draw_notes('rectangle')
 
         self.timestamp = self.create_rectangle(
@@ -58,16 +59,7 @@ class PianoRoll(Canvas):
         elif shape == 'line':
             shape_method = self.create_line
 
-        if self.zoomLevel != 1:
-            factor = 1 / self.zoomLevel
-            self.zoomLevel = 1
-            self.scale('all', 0, 0, factor, 1)
-
-            x1, _, x2, _ = self.bbox('all')
-            _, _, _, y2 = self.sidebar.bbox('all')
-            self.configure(scrollregion=[x1, 0, x2, y2])
-            app.timestamp_speed *= factor
-            self.timestamp_x *= factor
+        self.reset_zoom_level()
 
         if app.tracks and shape_method:
             self.note_id = []
@@ -99,9 +91,56 @@ class PianoRoll(Canvas):
                         ))
 
 
+    def connect_notes(self):
+        app = self.parent.parent
+        if not app.tracks:
+            return
+
+        self.reset_zoom_level()
+        if len(self.connected_line_id) > 0:
+            for i, track in enumerate(app.tracks):
+                self.delete(f'line_track_{i}')
+            self.connected_line_id = []
+        else:
+            self.connected_line_id = []
+            for j, track in enumerate(app.tracks):
+                self.connected_line_id.append([])
+                for i in range(len(track.notes)-1):
+                    note_y_1 = self.get_note_height(track.notes[i][0])
+                    note_start_1 = track.notes[i][1]
+                    note_end_1 = track.notes[i][2]
+                    note_y_2 = self.get_note_height(track.notes[i+1][0])
+                    note_start_2 = track.notes[i+1][1]
+                    note_end_2 = track.notes[i+1][2]
+                    self.connected_line_id[-1].append(
+                        self.create_line(
+                            (note_end_1+note_start_1)/2, note_y_1 + NOTE_THICKNESS/2,
+                            (note_end_2+note_start_2)/2, note_y_2 + NOTE_THICKNESS/2,
+                            fill=track.color,
+                            activefill='black',
+                            tags=f'line_track_{j}',
+                    ))
+
+
+    def reset_zoom_level(self):
+        app = self.parent.parent
+        if self.zoomLevel != 1:
+            factor = 1 / self.zoomLevel
+            self.zoomLevel = 1
+            self.scale('all', 0, 0, factor, 1)
+
+            x1, _, x2, _ = self.bbox('all')
+            _, _, _, y2 = self.sidebar.bbox('all')
+            self.configure(scrollregion=[x1, 0, x2, y2])
+            app.timestamp_speed *= factor
+            self.timestamp_x *= factor
+
 
     def init_tooltips(self, notation=None):
         app = self.parent.parent
+        if not app.tracks:
+            return
+
         for i, track in enumerate(app.tracks):
             for j in range(len(track.notes)):
                 note_start = track.notes[j][1]

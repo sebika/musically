@@ -240,7 +240,7 @@ class TrackSidebarButton(Button):
             activebackground =self.on_color,
             width=int(parent.width//15),
             height=int(parent.width//30),
-            wraplength=70,
+            wraplength=45,
             command=self.change
         )
         self.update_color()
