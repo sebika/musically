@@ -24,6 +24,7 @@ class App:
         self.root.filename = None
         self.length_in_seconds = None
         self.seconds_elapsed = None
+        self.menu = None
         self.tooltip = Pmw.Balloon()
 
         self.sidebar = PianoNoteSidebar(self.root)
@@ -84,27 +85,26 @@ class App:
         self.menu.add_cascade(label='File', menu=fileMenu)
 
         preferencesMenu = tk.Menu(self.menu, tearoff=0)
-
-        preferencesMenu.add_checkbutton(label='Connected notes', command=lambda: self.canvas.connect_notes())
+        preferencesMenu.add_command(label='Connected notes', command=lambda: self.canvas.connect_notes())
 
         solfege_submenu = tk.Menu(preferencesMenu, tearoff=0)
-        solfege_submenu.add_radiobutton(label='Do/Re/Mi', command=lambda: self.change_solfege_notes('classic'))
-        solfege_submenu.add_radiobutton(label='A0/B0/C0', command=lambda: self.change_solfege_notes('new'))
+        solfege_submenu.add_command(label='Do/Re/Mi', command=lambda: self.change_solfege_notes('classic'))
+        solfege_submenu.add_command(label='A0/B0/C0', command=lambda: self.change_solfege_notes('new'))
         preferencesMenu.add_cascade(label='Solfege', menu=solfege_submenu)
 
         notes_submenu = tk.Menu(preferencesMenu, tearoff=0)
         notes_submenu.add_command(label='Color')
 
         shape_submenu = tk.Menu(notes_submenu, tearoff=0)
-        shape_submenu.add_radiobutton(label='Rectangle', command=lambda: (
+        shape_submenu.add_command(label='Rectangle', command=lambda: (
             self.canvas.draw_notes('rectangle'),
             self.canvas.init_tooltips(),
         ))
-        shape_submenu.add_radiobutton(label='Oval', command=lambda: (
+        shape_submenu.add_command(label='Oval', command=lambda: (
             self.canvas.draw_notes('oval'),
             self.canvas.init_tooltips(),
         ))
-        shape_submenu.add_radiobutton(label='Line', command=lambda: (
+        shape_submenu.add_command(label='Line', command=lambda: (
             self.canvas.draw_notes('line'),
             self.canvas.init_tooltips(),
         ))
@@ -161,6 +161,7 @@ class App:
             return
 
         self.root.filename = file
+        self.init_menu()
 
         self.init_sidebar_notes()
         pygame.mixer.music.stop()
