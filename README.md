@@ -21,3 +21,9 @@ Convert `midi` to `wav` in linux:
    - playing a wav file instead of playing each individial note due to not being
    constrained about an instrument which should be downloaded as a sound for each note,
    but this solution occasionally leads to performance issues => time drift
+
+07.04.2022
+   - consonant intervals:
+      - 0, 3, 4, 5, 7, 8, 9, 12
+   - dissonant intervals
+      - 1, 2, 6, 10, 11

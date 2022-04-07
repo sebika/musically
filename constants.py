@@ -58,3 +58,6 @@ SOLFEGE = {
     'A': 'LA',
     'B': 'SI'
 }
+
+CONSONANCES = [0, 3, 4, 5, 7, 8, 9]
+DISSONANCES = [1, 2, 6, 10, 11]

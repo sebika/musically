@@ -1,6 +1,7 @@
 import tkinter as tk
 from common import Track
 from constants import (
+    CONSONANCES,
     FPS,
     ROOT_INITIAL_HEIGHT,
     ROOT_INITIAL_WIDTH,
@@ -66,7 +67,7 @@ class App:
         self.screenWidth = self.root.winfo_screenwidth()
         self.screenHeight = self.root.winfo_screenheight()
         pixelsRight = (self.screenWidth - ROOT_INITIAL_WIDTH) // 2
-        pixelsDown = (self.screenHeight - ROOT_INITIAL_HEIGHT) // 2
+        pixelsDown = (self.screenHeight - ROOT_INITIAL_HEIGHT) // 3
         self.root.geometry(
             f'{ROOT_INITIAL_WIDTH}x{ROOT_INITIAL_HEIGHT}+{pixelsRight}+{pixelsDown}'
         )
@@ -161,7 +162,6 @@ class App:
             return
 
         self.root.filename = file
-        self.init_menu()
 
         self.init_sidebar_notes()
         pygame.mixer.music.stop()
@@ -169,6 +169,8 @@ class App:
         self.tracks = self.import_song(self.root.filename)
         for track in self.tracks:
             track.notes.sort(key=lambda y: y[1])
+
+        self.compute_consonances_and_dissonances()
 
         # Create a new canvas
         self.canvas.grid_remove()
@@ -208,6 +210,34 @@ class App:
         for _ in range(len(self.tracks)):
             self.current_notes.append([])
             self.note_index_to_play.append(0)
+
+
+    def compute_consonances_and_dissonances(self):
+        self.consonances = []
+        for t in range(0, self.length_in_ticks+1, 10):
+            notes_now = []
+            for track in self.tracks:
+                for note in track.notes:
+                    if note[1] <= t and note[2] >= t:
+                        notes_now.append(note[0])
+                    elif note[1] > t:
+                        break
+            if len(notes_now) > 1:
+                notes_now.sort()
+                consonants = 0
+                total = 0
+                for i in range(len(notes_now)-1):
+                    for j in range(i+1, len(notes_now)):
+                        if (notes_now[j] - notes_now[i]) % 12 in CONSONANCES:
+                            consonants += 1
+                        total += 1
+                percent = consonants / total * 100
+                if percent >= 50:
+                    self.consonances.append((t, 'consonant'))
+                else:
+                    self.consonances.append((t, 'dissonant'))
+            else:
+                self.consonances.append((t, 'less than 2 notes are playing'))
 
 
     def import_song(self, songname):
