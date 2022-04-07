@@ -27,6 +27,7 @@ class PianoRoll(Canvas):
         self.zoomLevel = 1
         self.note_id = []
         self.connected_line_id = []
+        self.consonances_id = []
 
         super(PianoRoll, self).__init__(
             parent,
@@ -89,6 +90,38 @@ class PianoRoll(Canvas):
                                 activefill='lightgray',
                                 tags=f'track_{i}',
                         ))
+
+
+    def show_consonances(self):
+        app = self.parent.parent
+        if not app.tracks:
+            return
+        self.reset_zoom_level()
+
+
+        if len(self.consonances_id) > 0:
+            self.delete('consonances')
+            self.consonances_id = []
+        else:
+            self.consonances_id = []
+            tile_width = app.consonances[1][0] - app.consonances[0][0]
+            tile_height = self.get_note_height(0)+NOTE_THICKNESS
+            for t, val in app.consonances:
+                color = ''
+                if val == 'consonant':
+                    color = 'green'
+                elif val == 'dissonant':
+                    color = 'red'
+
+                self.consonances_id.append(
+                    self.create_rectangle(
+                        t, 0, t+tile_width, tile_height,
+                        fill=color,
+                        stipple='gray25',
+                        outline='',
+                        tags='consonances'
+                ))
+                self.tag_lower(self.consonances_id[-1])
 
 
     def connect_notes(self):

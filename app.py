@@ -86,6 +86,7 @@ class App:
         self.menu.add_cascade(label='File', menu=fileMenu)
 
         preferencesMenu = tk.Menu(self.menu, tearoff=0)
+        preferencesMenu.add_command(label='Consonances', command=lambda: self.canvas.show_consonances())
         preferencesMenu.add_command(label='Connected notes', command=lambda: self.canvas.connect_notes())
 
         solfege_submenu = tk.Menu(preferencesMenu, tearoff=0)
@@ -180,6 +181,7 @@ class App:
         for i, track in enumerate(self.tracks):
             self.trackSidebar.buttons[i].show()
             self.trackSidebar.buttons[i]['text'] = track.name
+            self.trackSidebar.buttons[i].selected.set(True)
         for i in range(len(self.tracks), len(self.trackSidebar.buttons)):
             self.trackSidebar.buttons[i].hide()
 
