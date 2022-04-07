@@ -1,6 +1,48 @@
 # musically
 This repo contains my bachelors degree project
 
+## Roadmap
+
+### Default user
+- [ ] piano roll unde se poate face zoom in si zoom out
+- [ ] forma geometrica a notelor din piano roll sa poata fi customizata (dreptunghi, cerc, etc)
+- [ ] un scroll vertical cu clape de pian ca in poza de referinta
+- [ ] lungimea pe orizontala a unei note va reprezenta durata notei respective
+- [ ] posibilitatea de a da play la o melodie si de a observa in timp real cum o bara verticala parcurge notele pe rand
+- [ ] A0, B0, C0 / Do, Re, Mi, Fa, ...
+- [ ] vizualizari extra:
+   - [ ] arc diagram
+   - [ ] vertical frequency visualiser
+
+
+### Advanced user
+- [ ] separarea instrumentelor care canta in acelasi timp:
+   - [ ] abilitatea de a selecta sau a deselecta partitura unui instrument
+   - [ ] colorarea diferta a instrumentelor distincte
+   - [ ] posibilitatea de a uni cu linii continue notele care apartin aceluiasi instrument
+
+- [ ] vizualizarea consonantelor si disonantelor
+- [ ] procentul de note disonante in intregimea melodiei
+- [ ] tooltip in cazul in care se face hover deasupra unei note care sa contina
+   - [ ] pitch-ul
+   - [ ] durata
+- [ ] posibilitatea cat mai mare de a customiza figurile geometrice care reprezinta notele (culoare, marime, opacitate, contur, etc)
+- [ ] extragerea de sentimente din piesa muzicala
+
+## 03.04.2022:
+   - time drift is a problem
+   - apparently when you hold down click on a scrollbar it slows the animation
+   - playing a wav file instead of playing each individial note due to not being
+   constrained about an instrument which should be downloaded as a sound for each note,
+   but this solution occasionally leads to performance issues => time drift
+
+## 07.04.2022
+   - consonant intervals:
+      - 0, 3, 4, 5, 7, 8, 9, 12
+   - dissonant intervals
+      - 1, 2, 6, 10, 11
+
+## Issues when installing
 If `pygame.mixer` doesn't work:
    1.  Go to the directory where pygame is installed (you can get it by typing `pip install pygame`).
    2.  Look for the `libmpg123.dll` in pygame directory.
@@ -10,20 +52,12 @@ If `pygame.mixer` doesn't work:
 Play midi in windows (not really necessary):
    - https://ksvi.mff.cuni.cz/~dingle/2019/prog_1/python_music.html
 
-Convert `midi` to `wav` in linux:
-```
-   timidity song.mid -Ow -o song.wav
-```
+## Links
+logo image:
+   - https://www.vectorstock.com/royalty-free-vector/note-music-logo-design-vector-27015396 - Artist ModalTampang
 
-03.04.2022:
-   - time drift is a problem
-   - apparently when you hold down click on a scrollbar it slows the animation
-   - playing a wav file instead of playing each individial note due to not being
-   constrained about an instrument which should be downloaded as a sound for each note,
-   but this solution occasionally leads to performance issues => time drift
+consonances and dissonances:
+   - https://www.earmaster.com/music-theory-online/ch05/chapter-5-3.html
 
-07.04.2022
-   - consonant intervals:
-      - 0, 3, 4, 5, 7, 8, 9, 12
-   - dissonant intervals
-      - 1, 2, 6, 10, 11
+music notation meaning:
+   - https://en.wikipedia.org/wiki/List_of_musical_symbols
