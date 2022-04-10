@@ -93,6 +93,7 @@ class App:
         viewMenu.add_separator()
         viewMenu.add_command(label='Consonances', command=lambda: self.canvas.show_consonances())
         viewMenu.add_command(label='Notes connected', command=lambda: self.canvas.connect_notes())
+        viewMenu.add_separator()
         viewMenu.add_command(label='Song info', command=lambda: self.song_info())
 
         solfege_submenu = tk.Menu(viewMenu, tearoff=0)
@@ -147,17 +148,18 @@ class App:
 
 
     def song_info(self):
-        song_name = self.root.filename.split('/')[-1].split('.')[0].replace('_', ' ').title()
-        tk.messagebox.showinfo(
-            title=f'{song_name} - additional information',
-            message=(
-                f'Song length: {self.length_in_seconds:.2f}s\n'
-                f'Time signature: {self.numerator}/{self.denominator}\n'
-                f'Number of individual tracks: {len(self.tracks)}\n'
-                f'Number of individual notes: {sum([len(track.notes) for track in self.tracks])}\n'
-                f'Consonances percent: {self.consonant_percent:.2f}%'
+        if self.root.filename:
+            song_name = self.root.filename.split('/')[-1].split('.')[0].replace('_', ' ').title()
+            tk.messagebox.showinfo(
+                title=f'{song_name} - additional information',
+                message=(
+                    f'Song length: {self.length_in_seconds:.2f}s\n'
+                    f'Time signature: {self.numerator}/{self.denominator}\n'
+                    f'Number of tracks: {len(self.tracks)}\n'
+                    f'Number of notes: {sum([len(track.notes) for track in self.tracks])}\n'
+                    f'Consonances percent: {self.consonant_percent:.2f}%'
+                )
             )
-        )
 
 
     def change_solfege_notes(self, notation=None):

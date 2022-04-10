@@ -42,6 +42,13 @@ This repo contains my bachelors degree project
    - dissonant intervals
       - 1, 2, 6, 10, 11
 
+## 10.04.2022
+   - fixed track buttons bug with connected notes
+   - add mute/unmute button
+   - add errors for player buttons
+   - add information about the song
+   - cleaned up the menu
+
 ## Issues when installing
 If `pygame.mixer` doesn't work:
    1.  Go to the directory where pygame is installed (you can get it by typing `pip install pygame`).
