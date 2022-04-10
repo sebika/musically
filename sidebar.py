@@ -313,9 +313,13 @@ class TrackSidebarButton(Button):
     def change(self):
         canvas = self.parent.parent.parent.canvas
         track_notes = list(canvas.find_withtag(f'track_{self.id}'))
+        connected_track_notes = list(canvas.find_withtag(f'line_track_{self.id}'))
         self.selected.set(not self.selected.get())
         if self.selected.get():
             self.configure(bg=self.on_color, activebackground=self.on_color)
+            for line in connected_track_notes:
+                canvas.itemconfigure(line, state='normal')
+                canvas.tag_raise(line)
             for note in track_notes:
                 canvas.itemconfigure(note, state='normal')
                 canvas.tag_raise(note)
@@ -324,3 +328,5 @@ class TrackSidebarButton(Button):
             self.configure(bg=self.off_color, activebackground=self.off_color)
             for note in track_notes:
                 canvas.itemconfigure(note, state='hidden')
+            for line in connected_track_notes:
+                canvas.itemconfigure(line, state='hidden')

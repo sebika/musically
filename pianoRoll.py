@@ -161,6 +161,8 @@ class PianoRoll(Canvas):
                             activefill='black',
                             tags=f'line_track_{j}',
                     ))
+                    if not app.trackSidebar.buttons[j].selected.get():
+                        self.itemconfigure(self.connected_line_id[-1][-1], state='hidden')
 
 
     def reset_zoom_level(self):
