@@ -13,6 +13,7 @@ This repo contains my bachelors degree project
 - [ ] vizualizari extra:
    - [ ] arc diagram
    - [ ] vertical frequency visualiser
+- [ ] implementare a tabului 'Help'
 
 
 ### Advanced user
@@ -21,7 +22,7 @@ This repo contains my bachelors degree project
    - [x] colorarea diferta a instrumentelor distincte
    - [x] posibilitatea de a uni cu linii continue notele care apartin aceluiasi instrument
 - [x] vizualizarea consonantelor si disonantelor
-- [ ] procentul de note disonante in intregimea melodiei
+- [x] procentul de note disonante in intregimea melodiei
 - [x] tooltip in cazul in care se face hover deasupra unei note care sa contina
    - [x] pitch-ul
    - [x] durata

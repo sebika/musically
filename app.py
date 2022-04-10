@@ -19,23 +19,7 @@ import Pmw
 
 class App:
     def __init__(self):
-        self.root = tk.Tk()
-        self.root.parent = self
-        self.tracks = None
-        self.root.filename = None
-        self.length_in_seconds = None
-        self.seconds_elapsed = None
-        self.menu = None
-        self.tooltip = Pmw.Balloon()
-
-        self.sidebar = PianoNoteSidebar(self.root)
-        self.canvas = PianoRoll(self.root, self.sidebar)
-        self.canvas.configure_scrollbars(self.root)
-        self.musicPlayer = MusicPlayer(self.root)
-        self.trackSidebar = TrackSidebar(self.root)
-
-        self.root.update()
-
+        self.init_class_members()
         self.init_mixer()
         self.init_window()
         self.init_menu()
@@ -55,6 +39,23 @@ class App:
         ))
 
         self.root.configure(bg=COLOR_PALETTE['black_coral'])
+
+    def init_class_members(self):
+        self.root = tk.Tk()
+        self.root.parent = self
+        self.tracks = None
+        self.root.filename = None
+        self.length_in_seconds = None
+        self.consonant_percent = -1
+        self.seconds_elapsed = None
+        self.menu = None
+        self.tooltip = Pmw.Balloon()
+
+        self.sidebar = PianoNoteSidebar(self.root)
+        self.canvas = PianoRoll(self.root, self.sidebar)
+        self.canvas.configure_scrollbars(self.root)
+        self.musicPlayer = MusicPlayer(self.root)
+        self.trackSidebar = TrackSidebar(self.root)
 
 
     def init_mixer(self):
@@ -85,16 +86,20 @@ class App:
         fileMenu.add_command(label='Exit', command=self.root.destroy)
         self.menu.add_cascade(label='File', menu=fileMenu)
 
-        preferencesMenu = tk.Menu(self.menu, tearoff=0)
-        preferencesMenu.add_command(label='Consonances', command=lambda: self.canvas.show_consonances())
-        preferencesMenu.add_command(label='Connected notes', command=lambda: self.canvas.connect_notes())
+        viewMenu = tk.Menu(self.menu, tearoff=0)
+        appearance_submenu = tk.Menu(viewMenu, tearoff=0)
+        viewMenu.add_cascade(label='Appearance', menu=appearance_submenu)
+        viewMenu.add_separator()
+        viewMenu.add_command(label='Consonances', command=lambda: self.canvas.show_consonances())
+        viewMenu.add_command(label='Notes connected', command=lambda: self.canvas.connect_notes())
+        viewMenu.add_command(label='Song info', command=lambda: self.song_info())
 
-        solfege_submenu = tk.Menu(preferencesMenu, tearoff=0)
+        solfege_submenu = tk.Menu(viewMenu, tearoff=0)
         solfege_submenu.add_command(label='Do/Re/Mi', command=lambda: self.change_solfege_notes('classic'))
         solfege_submenu.add_command(label='A0/B0/C0', command=lambda: self.change_solfege_notes('new'))
-        preferencesMenu.add_cascade(label='Solfege', menu=solfege_submenu)
+        appearance_submenu.add_cascade(label='Solfege', menu=solfege_submenu)
 
-        notes_submenu = tk.Menu(preferencesMenu, tearoff=0)
+        notes_submenu = tk.Menu(viewMenu, tearoff=0)
         notes_submenu.add_command(label='Color')
 
         shape_submenu = tk.Menu(notes_submenu, tearoff=0)
@@ -113,10 +118,9 @@ class App:
         notes_submenu.add_cascade(label='Shape', menu=shape_submenu)
 
         notes_submenu.add_command(label='Opacity')
-        preferencesMenu.add_cascade(label='Notes', menu=notes_submenu)
+        appearance_submenu.add_cascade(label='Notes', menu=notes_submenu)
 
-        self.menu.add_cascade(label='Preferences', menu=preferencesMenu)
-
+        self.menu.add_cascade(label='View', menu=viewMenu)
         self.menu.add_cascade(label='Help')
 
         self.root.config(menu=self.menu)
@@ -139,6 +143,20 @@ class App:
         self.sidebar.updateSize(event, self.root)
         self.musicPlayer.updateSize(event, self.root)
         self.trackSidebar.updateSize(event, self.root)
+
+
+    def song_info(self):
+        song_name = self.root.filename.split('/')[-1].split('.')[0].replace('_', ' ').title()
+        tk.messagebox.showinfo(
+            title=f'{song_name} - additional information',
+            message=(
+                f'Song length: {self.length_in_seconds:.2f}s\n'
+                f'Time signature: {self.numerator}/{self.denominator}\n'
+                f'Number of individual tracks: {len(self.tracks)}\n'
+                f'Number of individual notes: {sum([len(track.notes) for track in self.tracks])}\n'
+                f'Consonances percent: {self.consonant_percent:.2f}%'
+            )
+        )
 
 
     def change_solfege_notes(self, notation=None):
@@ -216,6 +234,8 @@ class App:
 
     def compute_consonances_and_dissonances(self):
         self.consonances = []
+        no_consonant = 0
+        no_dissonant = 0
         for t in range(0, self.length_in_ticks+1, 10):
             notes_now = []
             for track in self.tracks:
@@ -236,10 +256,14 @@ class App:
                 percent = consonants / total * 100
                 if percent >= 50:
                     self.consonances.append((t, 'consonant'))
+                    no_consonant += 1
                 else:
                     self.consonances.append((t, 'dissonant'))
+                    no_dissonant += 1
             else:
                 self.consonances.append((t, 'less than 2 notes are playing'))
+
+        self.consonant_percent = no_consonant / (no_consonant + no_dissonant) * 100
 
 
     def import_song(self, songname):
@@ -281,6 +305,9 @@ class App:
                 elif isinstance(msg, MetaMessage) and msg.type == 'set_tempo':
                     if msg.tempo != 0:
                         self.tempo = msg.tempo
+                elif isinstance(msg, MetaMessage) and msg.type == 'time_signature':
+                    self.numerator = msg.numerator
+                    self.denominator = msg.denominator
                 else:
                     ticks += msg.time
                 self.length_in_ticks = ticks

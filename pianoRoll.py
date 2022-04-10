@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Canvas
+from tkinter import Canvas, messagebox
 from constants import (
     PIANO_ROLL_HEIGHT_PERCENT,
     PIANO_ROLL_WIDTH_PERCENT,
@@ -98,11 +98,19 @@ class PianoRoll(Canvas):
             return
         self.reset_zoom_level()
 
-
         if len(self.consonances_id) > 0:
             self.delete('consonances')
             self.consonances_id = []
         else:
+            song_name = app.root.filename.split('/')[-1].split('.')[0].replace('_', ' ').title()
+            messagebox.showinfo(
+                title='Additional consonances information',
+                message=(
+                    f'{song_name} has a percent of {app.consonant_percent:.2f} consonances\n'
+                    f'Tip: you can always get see this under `View/Song info`'
+                )
+            )
+
             self.consonances_id = []
             tile_width = app.consonances[1][0] - app.consonances[0][0]
             tile_height = self.get_note_height(0)+NOTE_THICKNESS
