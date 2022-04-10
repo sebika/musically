@@ -1,5 +1,5 @@
 from cgitb import text
-from tkinter import CENTER, BooleanVar, Button, Canvas, Checkbutton, Frame, PhotoImage, Radiobutton, StringVar, IntVar
+from tkinter import CENTER, BooleanVar, Button, Canvas, Frame, PhotoImage, messagebox
 from constants import (
     CANVAS_GRID_X,
     CANVAS_GRID_Y,
@@ -15,8 +15,8 @@ from constants import (
     MUSIC_PLAYER_WIDTH_PERCENT,
     MUSIC_PLAYER_HEIGHT_PERCENT,
     SOLFEGE,
+    TRACKS_SIDEBAR_HEIGHT_PERCENT,
     TRACKS_SIDEBAR_WIDTH_PERCENT,
-    TRACKS_SIDEBAR_HEIGHT_PERCENT
 )
 import pygame
 
@@ -147,12 +147,38 @@ class MusicPlayer(Frame):
         )
         self.stop_button.place(relx=0.150, rely=0.5, anchor=CENTER)
 
+        self.volume_on = PhotoImage(file='resources/images/volume_on.png').subsample(5)
+        self.volume_off = PhotoImage(file='resources/images/volume_off.png').subsample(5)
+        self.is_volume_on = True
+        self.volume_button = Button(
+            self, image=self.volume_on, borderwidth=0, highlightthickness=0,
+            command=lambda: self.mute_unmute(None)
+        )
+        self.volume_button.place(relx=0.2, rely=0.5, anchor=CENTER)
+
         self.grid(row=0, column=1, columnspan=3, sticky='w')
+
+
+    def mute_unmute(self, event):
+        app = self.parent.parent
+        if app.root.filename:
+            self.is_volume_on = not self.is_volume_on
+            if self.is_volume_on:
+                self.volume_button.configure(image=self.volume_on)
+                pygame.mixer.music.set_volume(1)
+            else:
+                self.volume_button.configure(image=self.volume_off)
+                pygame.mixer.music.set_volume(0)
+        else:
+            messagebox.showerror(
+                title='Music player error',
+                message='You need to Open a midi file before trying to mute a song'
+            )
 
 
     def play_song(self, event):
         app = self.parent.parent
-        if self.parent.parent.root.filename:
+        if app.root.filename:
             if self.is_playing == None:
                 self.is_playing = True
                 self.play_button.configure(image=self.pause_image)
@@ -171,18 +197,29 @@ class MusicPlayer(Frame):
                 else:
                     self.play_button.configure(image=self.play_image)
                     pygame.mixer.music.pause()
+        else:
+            messagebox.showerror(
+                title='Music player error',
+                message='You need to Open a midi file before trying to play it'
+            )
 
 
     def stop_song(self, event):
         app = self.parent.parent
-        self.is_playing = None
-        self.play_button.configure(image=self.play_image)
-        pygame.mixer.music.stop()
-        app.seconds_elapsed = 0
-        app.init_current_playing_notes()
-        app.init_sidebar_notes()
-        app.init_canvas_notes()
-        app.canvas.stop_song()
+        if app.root.filename:
+            self.is_playing = None
+            self.play_button.configure(image=self.play_image)
+            pygame.mixer.music.stop()
+            app.seconds_elapsed = 0
+            app.init_current_playing_notes()
+            app.init_sidebar_notes()
+            app.init_canvas_notes()
+            app.canvas.stop_song()
+        else:
+            messagebox.showerror(
+                title='Music player error',
+                message='You need to Open a midi file before trying to stop a song'
+            )
 
 
     def updateSize(self, event, parent):

@@ -27,6 +27,7 @@ class App:
         self.root.bind('<Configure>', self.updateSize)
         self.root.bind('<space>', self.musicPlayer.play_song)
         self.root.bind('r', self.musicPlayer.stop_song)
+        self.root.bind('m', self.musicPlayer.mute_unmute)
         self.root.bind("<Left>",  lambda event: self.canvas.xview_scroll(-SCROLL_SPEED, "units"))
         self.root.bind("<Right>", lambda event: self.canvas.xview_scroll(SCROLL_SPEED, "units"))
         self.root.bind("<Up>",    lambda event: (
