@@ -49,6 +49,12 @@ This repo contains my bachelors degree project
    - add information about the song
    - cleaned up the menu
 
+## 11.04.2022
+   - change track color using a color picker
+   - fix track sidebar buttons (no more stupid 3000 offset)
+   - changed the menu again
+   - added note opacity
+
 ## Issues when installing
 If `pygame.mixer` doesn't work:
    1.  Go to the directory where pygame is installed (you can get it by typing `pip install pygame`).

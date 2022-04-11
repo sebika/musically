@@ -89,16 +89,14 @@ class App:
 
         viewMenu = tk.Menu(self.menu, tearoff=0)
         appearance_submenu = tk.Menu(viewMenu, tearoff=0)
-        viewMenu.add_cascade(label='Appearance', menu=appearance_submenu)
-        viewMenu.add_separator()
         viewMenu.add_command(label='Consonances', command=lambda: self.canvas.show_consonances())
         viewMenu.add_command(label='Notes connected', command=lambda: self.canvas.connect_notes())
         viewMenu.add_separator()
         viewMenu.add_command(label='Song info', command=lambda: self.song_info())
 
         solfege_submenu = tk.Menu(viewMenu, tearoff=0)
-        solfege_submenu.add_command(label='Do/Re/Mi', command=lambda: self.change_solfege_notes('classic'))
-        solfege_submenu.add_command(label='A0/B0/C0', command=lambda: self.change_solfege_notes('new'))
+        solfege_submenu.add_command(label='Classic: Do/Re/Mi', command=lambda: self.change_solfege_notes('classic'))
+        solfege_submenu.add_command(label='Modern: A0/B0/C0', command=lambda: self.change_solfege_notes('new'))
         appearance_submenu.add_cascade(label='Solfege', menu=solfege_submenu)
 
         notes_submenu = tk.Menu(viewMenu, tearoff=0)
@@ -117,10 +115,32 @@ class App:
         ))
         notes_submenu.add_cascade(label='Shape', menu=shape_submenu)
 
-        notes_submenu.add_command(label='Opacity')
+        opacity_submenu = tk.Menu(notes_submenu, tearoff=0)
+        opacity_submenu.add_command(
+            label='Opac',
+            command=lambda: self.canvas.change_opacity('')
+        )
+        opacity_submenu.add_command(
+            label='gray75',
+            command=lambda: self.canvas.change_opacity('gray75')
+        )
+        opacity_submenu.add_command(
+            label='gray50',
+            command=lambda: self.canvas.change_opacity('gray50')
+        )
+        opacity_submenu.add_command(
+            label='gray25',
+            command=lambda: self.canvas.change_opacity('gray25')
+        )
+        opacity_submenu.add_command(
+            label='gray12',
+            command=lambda: self.canvas.change_opacity('gray12')
+        )
+        notes_submenu.add_cascade(label='Opacity', menu=opacity_submenu)
         appearance_submenu.add_cascade(label='Notes', menu=notes_submenu)
 
         self.menu.add_cascade(label='View', menu=viewMenu)
+        self.menu.add_cascade(label='Appearance', menu=appearance_submenu)
         self.menu.add_cascade(label='Help')
 
         self.root.config(menu=self.menu)

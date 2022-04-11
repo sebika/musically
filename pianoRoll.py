@@ -97,6 +97,19 @@ class PianoRoll(Canvas):
                 self.tag_raise(self.timestamp)
 
 
+    def change_opacity(self, bitmap_name):
+        app = self.parent.parent
+        if not app.tracks:
+            return
+
+        for i in range(len(self.note_id)):
+            for note in self.note_id[i]:
+                if bitmap_name == '':
+                    self.itemconfigure(note, width=1, outline='black')
+                else:
+                    self.itemconfigure(note, width=0)
+                self.itemconfigure(note, stipple=bitmap_name)
+
     def show_consonances(self):
         app = self.parent.parent
         if not app.tracks:
