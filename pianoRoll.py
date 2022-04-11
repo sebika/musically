@@ -29,6 +29,7 @@ class PianoRoll(Canvas):
         self.note_id = []
         self.connected_line_id = []
         self.consonances_id = []
+        self.last_shape = None
 
         super(PianoRoll, self).__init__(
             parent,
@@ -62,6 +63,7 @@ class PianoRoll(Canvas):
             shape_method = self.create_line
 
         self.reset_zoom_level()
+        self.last_shape = shape
 
         if app.tracks and shape_method:
             self.note_id = []

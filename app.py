@@ -1,5 +1,5 @@
 import tkinter as tk
-from common import Track
+from sidebar import Track
 from constants import (
     CONSONANCES,
     FPS,
@@ -102,8 +102,6 @@ class App:
         appearance_submenu.add_cascade(label='Solfege', menu=solfege_submenu)
 
         notes_submenu = tk.Menu(viewMenu, tearoff=0)
-        notes_submenu.add_command(label='Color')
-
         shape_submenu = tk.Menu(notes_submenu, tearoff=0)
         shape_submenu.add_command(label='Rectangle', command=lambda: (
             self.canvas.draw_notes('rectangle'),
@@ -203,16 +201,16 @@ class App:
         self.trackSidebar.draw(track_names)
         self.trackSidebar.update()
 
+        # Update track button colors
+        for btn in self.trackSidebar.buttons:
+            btn.update_color()
+
         # Snap to the first note
         h = 10 ** 6
         for track in self.tracks:
             h = min(h, self.canvas.get_note_height(track.notes[0][0]))
         self.canvas.yview_moveto(h / self.canvas.get_note_height(0) - 0.1)
         self.sidebar.yview_moveto(h / self.canvas.get_note_height(0) - 0.1)
-
-        # Update track button colors
-        for btn in self.trackSidebar.buttons:
-            btn.update_color()
 
         # Compute speed of the timestamp
         self.length_in_seconds = tick2second(self.length_in_ticks, self.ticks_per_beat, self.tempo)

@@ -1,5 +1,7 @@
 from cgitb import text
+from re import I
 from tkinter import CENTER, BooleanVar, Button, Canvas, Frame, PhotoImage, messagebox
+from tkinter.colorchooser import askcolor
 from constants import (
     CANVAS_GRID_X,
     CANVAS_GRID_Y,
@@ -236,6 +238,7 @@ class TrackSidebar(Canvas):
         self.parent = parent
         self.width = ROOT_INITIAL_WIDTH * TRACKS_SIDEBAR_WIDTH_PERCENT / 100
         self.height = ROOT_INITIAL_HEIGHT * TRACKS_SIDEBAR_HEIGHT_PERCENT / 100
+        self.color_picker_image = PhotoImage(file='resources/images/color_picker.png').subsample(9)
 
         super(TrackSidebar, self).__init__(
             parent,
@@ -245,6 +248,7 @@ class TrackSidebar(Canvas):
             highlightthickness=0,
         )
         self.buttons = []
+        self.color_picker_buttons = []
         self.grid(row=1, column=0, rowspan=2, stick='S')
 
     def draw(self, track_names):
@@ -252,10 +256,17 @@ class TrackSidebar(Canvas):
             for button in self.buttons:
                 button.destroy()
             self.buttons = []
+            for button in self.color_picker_buttons:
+                button.destroy()
+            self.color_picker_buttons = []
             offset = 0
             for i, track_name in enumerate(track_names):
                 self.buttons.append(TrackSidebarButton(self, track_name, offset, i))
+                self.color_picker_buttons.append(ColorPickerTrackSidebarButton(
+                    self, self.color_picker_image, offset, i
+                ))
                 offset += self.height // 6
+
 
     def updateSize(self, event, parent):
         parent.update()
@@ -263,6 +274,39 @@ class TrackSidebar(Canvas):
         self.height = TRACKS_SIDEBAR_HEIGHT_PERCENT / 100 * parent.winfo_height()
 
         self.config(width=self.width, height=self.height)
+
+
+class ColorPickerTrackSidebarButton(Button):
+    def __init__(self, parent, image, offset, id):
+        self.id = id
+        self.parent = parent
+        super(ColorPickerTrackSidebarButton, self).__init__(
+            parent,
+            image=image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: self.change_track_color(id)
+        )
+        self.place(relx=0.5, y=offset+60, anchor=CENTER)
+
+
+    def change_track_color(self, track_index):
+        app = self.parent.parent.parent
+        hex_color = askcolor(title='Pick a color')[1]
+        if hex_color:
+            app.tracks[track_index].color = hex_color
+            track_notes = list(app.canvas.find_withtag(f'track_{self.id}'))
+            connected_track_notes = list(app.canvas.find_withtag(f'line_track_{track_index}'))
+
+            if len(app.canvas.connected_line_id) > 0:
+                for line in connected_track_notes:
+                    app.canvas.itemconfigure(line, fill=hex_color)
+
+            for note in track_notes:
+                app.canvas.itemconfigure(note, fill=hex_color)
+
+            self.parent.buttons[track_index].on_color = hex_color
+            self.parent.buttons[track_index].update_color()
 
 
 class TrackSidebarButton(Button):
@@ -282,7 +326,6 @@ class TrackSidebarButton(Button):
             wraplength=45,
             command=self.change,
         )
-        self.update_color()
 
         self.place(relx=0.5, y=30+offset, anchor=CENTER)
         self.y = 30+offset
@@ -298,14 +341,6 @@ class TrackSidebarButton(Button):
             self.configure(bg=self.on_color, activebackground=self.on_color)
         else:
             self.configure(bg=self.off_color, activebackground=self.off_color)
-
-
-    def show(self):
-        self.parent.itemconfigure(self.canvas_id, state='normal')
-
-
-    def hide(self):
-        self.parent.itemconfigure(self.canvas_id, state='hidden')
 
 
     def change(self):
@@ -328,3 +363,9 @@ class TrackSidebarButton(Button):
                 canvas.itemconfigure(note, state='hidden')
             for line in connected_track_notes:
                 canvas.itemconfigure(line, state='hidden')
+
+class Track():
+    def __init__(self, name, notes, color):
+        self.name = name
+        self.notes = notes
+        self.color = color
