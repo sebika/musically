@@ -26,7 +26,7 @@ This repo contains my bachelors degree project
 - [x] tooltip in cazul in care se face hover deasupra unei note care sa contina
    - [x] pitch-ul
    - [x] durata
-- [ ] posibilitatea cat mai mare de a customiza figurile geometrice care reprezinta notele (culoare, marime, opacitate, contur, etc)
+- [x] posibilitatea cat mai mare de a customiza figurile geometrice care reprezinta notele (culoare, marime, opacitate, contur, etc)
 - [ ] extragerea de sentimente din piesa muzicala
 
 ## 03.04.2022:
@@ -54,6 +54,7 @@ This repo contains my bachelors degree project
    - fix track sidebar buttons (no more stupid 3000 offset)
    - changed the menu again
    - added note opacity
+   - stipple works only on rectangles WOW ;(
 
 ## Issues when installing
 If `pygame.mixer` doesn't work:

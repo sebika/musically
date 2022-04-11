@@ -51,6 +51,7 @@ class App:
         self.seconds_elapsed = None
         self.menu = None
         self.tooltip = Pmw.Balloon()
+        self.tooltips_active = False
 
         self.sidebar = PianoNoteSidebar(self.root)
         self.canvas = PianoRoll(self.root, self.sidebar)
@@ -83,23 +84,37 @@ class App:
 
         fileMenu = tk.Menu(self.menu, tearoff=0)
         fileMenu.add_command(label='Open', command=self._open_file)
+        fileMenu.add_command(
+            label='Play/Pause                [Space]',
+            command=lambda: self.musicPlayer.play_song(None)
+        )
+        fileMenu.add_command(
+            label='Stop                           [R]',
+            command=lambda: self.musicPlayer.stop_song(None)
+        )
+        fileMenu.add_command(
+            label='Mute/Unmute         [M]',
+            command=lambda: self.musicPlayer.mute_unmute(None)
+        )
         fileMenu.add_separator()
         fileMenu.add_command(label='Exit', command=self.root.destroy)
         self.menu.add_cascade(label='File', menu=fileMenu)
 
         viewMenu = tk.Menu(self.menu, tearoff=0)
-        appearance_submenu = tk.Menu(viewMenu, tearoff=0)
         viewMenu.add_command(label='Consonances', command=lambda: self.canvas.show_consonances())
         viewMenu.add_command(label='Notes connected', command=lambda: self.canvas.connect_notes())
+        viewMenu.add_command(label='Tooltips', command=lambda: self.canvas.enable_tooltips())
         viewMenu.add_separator()
         viewMenu.add_command(label='Song info', command=lambda: self.song_info())
 
+        appearance_submenu = tk.Menu(viewMenu, tearoff=0)
         solfege_submenu = tk.Menu(viewMenu, tearoff=0)
-        solfege_submenu.add_command(label='Classic: Do/Re/Mi', command=lambda: self.change_solfege_notes('classic'))
-        solfege_submenu.add_command(label='Modern: A0/B0/C0', command=lambda: self.change_solfege_notes('new'))
+        solfege_submenu.add_command(label='Classic       [Do/Re/Mi]', command=lambda: self.change_solfege_notes('classic'))
+        solfege_submenu.add_command(label='Modern     [A0/B0/C0]', command=lambda: self.change_solfege_notes('new'))
         appearance_submenu.add_cascade(label='Solfege', menu=solfege_submenu)
 
         notes_submenu = tk.Menu(viewMenu, tearoff=0)
+        notes_submenu.add_command(label='Outline', command=lambda: self.canvas.outline())
         shape_submenu = tk.Menu(notes_submenu, tearoff=0)
         shape_submenu.add_command(label='Rectangle', command=lambda: (
             self.canvas.draw_notes('rectangle'),

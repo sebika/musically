@@ -30,6 +30,7 @@ class PianoRoll(Canvas):
         self.connected_line_id = []
         self.consonances_id = []
         self.last_shape = None
+        self.notes_outlined = True
 
         super(PianoRoll, self).__init__(
             parent,
@@ -109,6 +110,14 @@ class PianoRoll(Canvas):
                 else:
                     self.itemconfigure(note, width=0)
                 self.itemconfigure(note, stipple=bitmap_name)
+
+
+    def outline(self):
+        self.notes_outlined = not self.notes_outlined
+        for i in range(len(self.note_id)):
+            for note in self.note_id[i]:
+                self.itemconfigure(note, width=int(self.notes_outlined), outline='black')
+
 
     def show_consonances(self):
         app = self.parent.parent
@@ -199,7 +208,7 @@ class PianoRoll(Canvas):
 
     def init_tooltips(self, notation=None):
         app = self.parent.parent
-        if not app.tracks:
+        if not app.tracks or not app.tooltips_active:
             return
 
         for i, track in enumerate(app.tracks):
@@ -215,6 +224,17 @@ class PianoRoll(Canvas):
 
                 message = f'{pitch} plays {length:.2f} s'
                 app.tooltip.tagbind(self, self.note_id[i][j],  message)
+
+
+    def enable_tooltips(self):
+        app = self.parent.parent
+        app.tooltips_active = not app.tooltips_active
+        if app.tooltips_active:
+            self.init_tooltips()
+        else:
+            for i, track in enumerate(app.tracks):
+                for j in range(len(track.notes)):
+                    app.tooltip.tagunbind(self, self.note_id[i][j])
 
 
     def play_song(self):
