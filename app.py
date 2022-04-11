@@ -199,12 +199,9 @@ class App:
         self.canvas = PianoRoll(self.root, self.sidebar, self.tracks)
         self.canvas.configure_scrollbars(self.root)
 
-        for i, track in enumerate(self.tracks):
-            self.trackSidebar.buttons[i].show()
-            self.trackSidebar.buttons[i]['text'] = track.name
-            self.trackSidebar.buttons[i].selected.set(True)
-        for i in range(len(self.tracks), len(self.trackSidebar.buttons)):
-            self.trackSidebar.buttons[i].hide()
+        track_names = [track.name for track in self.tracks]
+        self.trackSidebar.draw(track_names)
+        self.trackSidebar.update()
 
         # Snap to the first note
         h = 10 ** 6

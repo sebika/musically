@@ -230,7 +230,7 @@ class MusicPlayer(Frame):
         self.config(width=self.width, height=self.height)
 
 
-class TrackSidebar(Frame):
+class TrackSidebar(Canvas):
     def __init__(self, parent):
         parent.update()
         self.parent = parent
@@ -242,18 +242,20 @@ class TrackSidebar(Frame):
             width=self.width,
             height=self.height,
             background=COLOR_PALETTE['black_coral'],
+            highlightthickness=0,
         )
         self.buttons = []
-        tracks = [f'Track {i}' for i in range(MAX_NUMBER_OF_TRACKS)]
-        self.draw(tracks)
-
         self.grid(row=1, column=0, rowspan=2, stick='S')
 
     def draw(self, track_names):
-        offset = 0
-        for i, track_name in enumerate(track_names):
-            self.buttons.append(TrackSidebarButton(self, track_name, offset, i))
-            offset += self.height // 8
+        if self.parent.parent.root.filename:
+            for button in self.buttons:
+                button.destroy()
+            self.buttons = []
+            offset = 0
+            for i, track_name in enumerate(track_names):
+                self.buttons.append(TrackSidebarButton(self, track_name, offset, i))
+                offset += self.height // 6
 
     def updateSize(self, event, parent):
         parent.update()
@@ -270,7 +272,7 @@ class TrackSidebarButton(Button):
         self.selected = BooleanVar(value=True)
         self.on_color = COLOR_PALETTE['bitter_lime']
 
-        super(TrackSidebarButton, self).__init__(
+        self.canvas_id = super(TrackSidebarButton, self).__init__(
             parent,
             text=text,
             bg=self.on_color,
@@ -278,10 +280,10 @@ class TrackSidebarButton(Button):
             width=int(parent.width//15),
             height=int(parent.width//30),
             wraplength=45,
-            command=self.change
+            command=self.change,
         )
         self.update_color()
-        offset -= 3000
+
         self.place(relx=0.5, y=30+offset, anchor=CENTER)
         self.y = 30+offset
 
@@ -299,15 +301,11 @@ class TrackSidebarButton(Button):
 
 
     def show(self):
-        if self.y < 0:
-            self.y += 3000
-            self.place(y=self.y)
+        self.parent.itemconfigure(self.canvas_id, state='normal')
 
 
     def hide(self):
-        if self.y > 0:
-            self.y -= 3000
-            self.place(y=self.y)
+        self.parent.itemconfigure(self.canvas_id, state='hidden')
 
 
     def change(self):

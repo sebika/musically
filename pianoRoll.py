@@ -23,6 +23,7 @@ class PianoRoll(Canvas):
         self.height = PIANO_ROLL_HEIGHT_PERCENT / 100 * parent.winfo_height()
         self.gridX = CANVAS_GRID_X
         self.gridY = CANVAS_GRID_Y
+        self.timestamp = None
         self.timestamp_x = 0
         self.zoomLevel = 1
         self.note_id = []
@@ -90,6 +91,8 @@ class PianoRoll(Canvas):
                                 activefill='lightgray',
                                 tags=f'track_{i}',
                         ))
+            if self.timestamp:
+                self.tag_raise(self.timestamp)
 
 
     def show_consonances(self):
