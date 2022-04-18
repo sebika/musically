@@ -98,7 +98,6 @@ class App:
         )
         fileMenu.add_separator()
         fileMenu.add_command(label='Exit', command=self.root.destroy)
-        self.menu.add_cascade(label='File', menu=fileMenu)
 
         viewMenu = tk.Menu(self.menu, tearoff=0)
         viewMenu.add_command(label='Consonances', command=lambda: self.canvas.show_consonances())
@@ -114,25 +113,24 @@ class App:
         appearance_submenu.add_cascade(label='Solfege', menu=solfege_submenu)
 
         notes_submenu = tk.Menu(viewMenu, tearoff=0)
-        notes_submenu.add_command(label='Outline', command=lambda: self.canvas.outline())
+
         shape_submenu = tk.Menu(notes_submenu, tearoff=0)
-        shape_submenu.add_command(label='Rectangle', command=lambda: (
+        shape_submenu.add_command(label='rectangle', command=lambda: (
             self.canvas.draw_notes('rectangle'),
             self.canvas.init_tooltips(),
         ))
-        shape_submenu.add_command(label='Oval', command=lambda: (
+        shape_submenu.add_command(label='oval', command=lambda: (
             self.canvas.draw_notes('oval'),
             self.canvas.init_tooltips(),
         ))
-        shape_submenu.add_command(label='Line', command=lambda: (
+        shape_submenu.add_command(label='line', command=lambda: (
             self.canvas.draw_notes('line'),
             self.canvas.init_tooltips(),
         ))
-        notes_submenu.add_cascade(label='Shape', menu=shape_submenu)
 
         opacity_submenu = tk.Menu(notes_submenu, tearoff=0)
         opacity_submenu.add_command(
-            label='Opac',
+            label='opac',
             command=lambda: self.canvas.change_opacity('')
         )
         opacity_submenu.add_command(
@@ -151,9 +149,13 @@ class App:
             label='gray12',
             command=lambda: self.canvas.change_opacity('gray12')
         )
-        notes_submenu.add_cascade(label='Opacity', menu=opacity_submenu)
         appearance_submenu.add_cascade(label='Notes', menu=notes_submenu)
 
+        notes_submenu.add_cascade(label='Opacity', menu=opacity_submenu)
+        notes_submenu.add_command(label='Outline', command=lambda: self.canvas.outline())
+        notes_submenu.add_cascade(label='Shape', menu=shape_submenu)
+
+        self.menu.add_cascade(label='File', menu=fileMenu)
         self.menu.add_cascade(label='View', menu=viewMenu)
         self.menu.add_cascade(label='Appearance', menu=appearance_submenu)
         self.menu.add_cascade(label='Help')
