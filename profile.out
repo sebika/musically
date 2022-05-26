@@ -1,0 +1,14 @@
+Ordered by: internal time
+   List reduced from 413 to 10 due to restriction <10>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1   20.069   20.069   27.042   27.042 {method 'mainloop' of '_tkinter.tkapp' objects}
+    26994    5.921    0.000    5.936    0.000 {method 'call' of '_tkinter.tkapp' objects}
+        1    0.778    0.778    0.781    0.781 <long_path>\app.py:269(compute_consonances_and_dissonances)
+        1    0.216    0.216    0.217    0.217 {built-in method pygame.base.init}
+        1    0.043    0.043    0.043    0.043 {built-in method _tkinter.create}
+    22601    0.039    0.000    0.077    0.000 <long_path>\lib\tkinter\__init__.pyinit__.py:1315(_options)
+    19779    0.025    0.000    0.156    0.000 <long_path>\lib\tkinter\__init__.pyinit__.py:2470(_create)
+    25364    0.020    0.000    0.031    0.000 <long_path>\lib\tkinter\__init__.pyinit__.py:96(_cnfmerge)
+   170191    0.018    0.000    0.038    0.000 {built-in method builtins.isinstance}
+    20963    0.015    0.000    0.017    0.000 <long_path>\pianoRoll.py:337(get_note_height)

@@ -158,7 +158,6 @@ class App:
         self.menu.add_cascade(label='File', menu=fileMenu)
         self.menu.add_cascade(label='View', menu=viewMenu)
         self.menu.add_cascade(label='Appearance', menu=appearance_submenu)
-        self.menu.add_cascade(label='Help')
 
         self.root.config(menu=self.menu)
 

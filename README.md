@@ -13,7 +13,6 @@ This repo contains my bachelors degree project
 - [ ] vizualizari extra:
    - [ ] arc diagram
    - [ ] vertical frequency visualiser
-- [ ] implementare a tabului 'Help'
 
 
 ### Advanced user
@@ -27,7 +26,7 @@ This repo contains my bachelors degree project
    - [x] pitch-ul
    - [x] durata
 - [x] posibilitatea cat mai mare de a customiza figurile geometrice care reprezinta notele (culoare, marime, opacitate, contur, etc)
-- [ ] extragerea de sentimente din piesa muzicala
+- [ ] evolutia sentimentelor in piesa muzicala (gama majora/minora)
 
 ## 03.04.2022:
    - time drift is a problem
@@ -55,6 +54,26 @@ This repo contains my bachelors degree project
    - changed the menu again
    - added note opacity
    - stipple works only on rectangles WOW ;(
+
+## 26.05.2022
+   - How to add profiling:
+```
+import cProfile
+from pstats import Stats
+from app import App
+
+if __name__ == '__main__':
+    pr = cProfile.Profile()
+    pr.enable()
+
+    musically = App()
+    musically.run()
+
+    pr.disable()
+    stats = Stats(pr)
+    stats.sort_stats('tottime').print_stats(30)
+
+```
 
 ## Issues when installing
 If `pygame.mixer` doesn't work:

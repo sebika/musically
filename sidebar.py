@@ -1,11 +1,8 @@
-from cgitb import text
-from re import I
-from tkinter import CENTER, BooleanVar, Button, Canvas, Frame, PhotoImage, messagebox
+from tkinter import CENTER, BooleanVar, Button, Canvas, PhotoImage, messagebox
 from tkinter.colorchooser import askcolor
 from constants import (
     CANVAS_GRID_X,
     CANVAS_GRID_Y,
-    MAX_NUMBER_OF_TRACKS,
     NOTE_THICKNESS,
     PLAYING_FILE_EXTENSION,
     ROOT_INITIAL_HEIGHT,
@@ -118,7 +115,7 @@ class SidebarNote():
         canvas.itemconfig(self.id, activefill=self.activefill)
 
 
-class MusicPlayer(Frame):
+class MusicPlayer(Canvas):
     def __init__(self, parent):
         parent.update()
         self.width = ROOT_INITIAL_WIDTH * MUSIC_PLAYER_WIDTH_PERCENT / 100
@@ -130,6 +127,7 @@ class MusicPlayer(Frame):
             width=self.width,
             height=self.height,
             background=COLOR_PALETTE['black_coral'],
+            highlightthickness=0
         )
 
         self.play_image = PhotoImage(file='resources/images/play.png').subsample(5)
