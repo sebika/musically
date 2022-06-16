@@ -41,6 +41,7 @@ class App:
 
         self.root.configure(bg=COLOR_PALETTE['black_coral'])
 
+
     def init_class_members(self):
         self.root = tk.Tk()
         self.root.parent = self
@@ -106,13 +107,13 @@ class App:
         viewMenu.add_separator()
         viewMenu.add_command(label='Song info', command=lambda: self.song_info())
 
-        appearance_submenu = tk.Menu(viewMenu, tearoff=0)
-        solfege_submenu = tk.Menu(viewMenu, tearoff=0)
+        appearance_menu = tk.Menu(self.menu, tearoff=0)
+        solfege_submenu = tk.Menu(appearance_menu, tearoff=0)
         solfege_submenu.add_command(label='Classic       [Do/Re/Mi]', command=lambda: self.change_solfege_notes('classic'))
         solfege_submenu.add_command(label='Modern     [A0/B0/C0]', command=lambda: self.change_solfege_notes('new'))
-        appearance_submenu.add_cascade(label='Solfege', menu=solfege_submenu)
+        appearance_menu.add_cascade(label='Solfege', menu=solfege_submenu)
 
-        notes_submenu = tk.Menu(viewMenu, tearoff=0)
+        notes_submenu = tk.Menu(appearance_menu, tearoff=0)
 
         shape_submenu = tk.Menu(notes_submenu, tearoff=0)
         shape_submenu.add_command(label='rectangle', command=lambda: (
@@ -149,7 +150,7 @@ class App:
             label='gray12',
             command=lambda: self.canvas.change_opacity('gray12')
         )
-        appearance_submenu.add_cascade(label='Notes', menu=notes_submenu)
+        appearance_menu.add_cascade(label='Notes', menu=notes_submenu)
 
         notes_submenu.add_cascade(label='Opacity', menu=opacity_submenu)
         notes_submenu.add_command(label='Outline', command=lambda: self.canvas.outline())
@@ -157,7 +158,17 @@ class App:
 
         self.menu.add_cascade(label='File', menu=fileMenu)
         self.menu.add_cascade(label='View', menu=viewMenu)
-        self.menu.add_cascade(label='Appearance', menu=appearance_submenu)
+        self.menu.add_cascade(label='Appearance', menu=appearance_menu)
+        self.menu.add_command(label='Tips',
+            command=lambda: tk.messagebox.showinfo(
+                title=f'Tips',
+                message=(
+                    f'Import a song using: File menu\n\n'
+                    f'Zoom in/out with: Ctrl + Mouse wheel up/down\n\n'
+                    f'Move around the canvas with: Arrow keys'
+                )
+            )
+        )
 
         self.root.config(menu=self.menu)
 
