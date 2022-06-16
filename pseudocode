@@ -1,0 +1,36 @@
+_do_zoom():
+    if any song is loaded:
+        factor <- 1.001
+
+        if zoom level is between a MAX and a MIN:
+            zoomLevel <- zoomLevel * factor
+
+            scale the canvas on OX with `factor`
+
+            find the bounding boxes for all objects and
+            set the new scroll region
+
+            rescale the `timestamp` speed, size and position
+
+compute_consonances_and_dissonances():
+    self.consonances <- []
+    no_consonant <- 0
+    no_dissonant <- 0
+    for t in 0, length_in_ticks+1; step=10
+        notes_now <- []
+        for track in tracks:
+            for note in track.notes:
+                if note is playing now:
+                    append the note to `notes_now` array
+        if there is more than 1 note playing now:
+            consonants <- 0
+            total <- 0
+            fore pair of notes (i, j) in notes:
+                if (i, j) is consonant:
+                    consonants += 1
+                total += 1
+            percent <- consonants / total * 100
+            if percent >= 50:
+                print 'Consonant'
+            else:
+                print 'Dissonant'
